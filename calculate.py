@@ -51,11 +51,44 @@ for child in children:
 
     print(child.text)
 
+# Go through each layer of the html to find page # out of max page #
+parent_page = page_to_scrape.find_element(By.XPATH, "//div[contains(@class, 'makeStylespaginationContainer')]")
+paren_page = parent_page.find_element(By.XPATH, ".//div[contains(@class, 'makeStylesroot')]")
+pare_page = paren_page.find_element(By.XPATH, ".//div[contains(@class, 'makeStylespaginationLabel')]")
+par_page = pare_page.find_element(By.XPATH, ".//div[contains(@class, 'makeStylesroot')]")
+page_num = par_page.find_element(By.XPATH, ".//div[contains(@class, 'makeStyleshideOffScreen')]")
+
+print(page_num.text)
+
+
+
+
+num_1 = page_num.text[5]
+num_2 = page_num.text[10]
+
+#repeat the pull untill max page is reached
+if num_1 != num_2 :
+    print()
+    print("page: " + str(int(num_1) + 1))
+    print()
+    paren_page.find_element(By.XPATH, "//button[@data-analytics-id='course.student.grade.components.common.pagination.pageUpButton']").click()
+    time.sleep(4)
+
+  #same process as before (scrape grades)
+    parent = page_to_scrape.find_element(By.XPATH, "//course-student-grades[@id='student-tab-panel-grades']")
+    children = parent.find_elements(By.XPATH, ".//div[contains(@class, 'MuiTypographyroot')]")
+
+    for child in children:
+        print(child.text)
+    time.sleep(4)
+    num_1 = int(num_1) + 1
+
+
 #   End the webscraping
 page_to_scrape.quit()
 
 # ----------------------------------------------------------------------------------------
-
 # If you want to check all the html use this:
-# --print(page_to_scrape.page_source)--
+# print(page_to_scrape.page_source)
 # -------------^
+
