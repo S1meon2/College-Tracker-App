@@ -1,15 +1,14 @@
+#You're going to need to install selenium in the terminal: pip install selenium
+#  vvv Will always ask for assignment to find
 while (True) :
-    import csv
     from selenium import webdriver
-    from selenium.webdriver.chrome.service import Service
     from selenium.webdriver.common.by import By
     import time
-    import getpass
 
-    print("What website do you need to get your homework from?  Options: Cengage, zyBooks, Blackboard --> ")
+    print("What website do you need to get your assignments from?  Options: Webassign, Zyooks, Blackboard --> ")
     web = input()
 
-    if web == "Cengage":
+    if web == "Webassign":
         #   Open Chrome
         page_to_scrape = webdriver.Chrome()
 
@@ -18,8 +17,10 @@ while (True) :
 
         #   Press Sign In
         page_to_scrape.find_element(By.ID, "menu-item-888").click()
+        
         #wait to load
         time.sleep(3)
+        
         #   Input Username
         username = page_to_scrape.find_element(By.ID, "idp-discovery-username")
         username.send_keys("/*username*/")
@@ -61,7 +62,7 @@ while (True) :
         #--print(page_to_scrape.page_source)--
         #-------------^
 
-    if web == "zyBooks":
+    if web == "Zybooks":
         #   Open Chrome
         page_to_scrape = webdriver.Chrome()
 
