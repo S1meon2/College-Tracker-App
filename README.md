@@ -1,4 +1,5 @@
-# College-Tracker-App (beta) ~ Webscrape all your assignments! -------     { Blackboard, Zybooks, Webassign/Cengage}
+# College-Tracker-App (beta) ~ Webscrape all your assignments!      
+# { Blackboard, Zybooks, Webassign/Cengage}
 
 This program can currently webscrape Homework / assignment sites such as Blackboard, Zybooks, and WebAssign.
 Then suggested actions after that is to:
