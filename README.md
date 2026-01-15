@@ -12,7 +12,7 @@ List out upcoming assignments based on the given data.
 
 If the assignment is under Cengage classifiy it as ______ (ex: math assignment). 
 If the homework is under zyBooks classifiy it as  ______ (ex: Computer Science assignment).  
-If homework is under blackboard and contains _______ then it's _________ (ex: contains ENGR-104-014 then CS Engineering).
+If homework is under _________ and contains _______ then it's _________ (ex: under Blackboard and contains ENGR-104-014 then CS Engineering).
 
 
   * Now, once the gem matches the you can copy and paste all the output from the College-Tracker program and gemini will sort all the assignments and due dates
