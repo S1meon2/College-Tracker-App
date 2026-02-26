@@ -41,6 +41,31 @@ ScreenManager:
         pos_hint: {"center_x": 0.5, "center_y": 0.4}
         on_release: root.manager.current = "main"
         
+    MDRaisedButton:
+        text: "Connect Zybooks"
+        pos_hint: {"center_x": 0.5, "center_y": 0.8}
+        
+    MDRaisedButton:
+        text: "Connect Cengage"
+        pos_hint: {"center_x": 0.5, "center_y": 0.7}
+        
+    MDRaisedButton:
+        text: "Connect Blackboard"
+        pos_hint: {"center_x": 0.5, "center_y": 0.6}
+        
+    MDRaisedButton:
+        text: "Connect Google"
+        pos_hint: {"center_x": 0.5, "center_y": 0.2}
+        
+    MDRaisedButton:
+        text: "Auto-Update ON"
+        pos_hint: {"center_x": 0.1, "center_y": 0.1}
+        
+    MDRaisedButton:
+        text: "Update"
+        pos_hint: {"center_x": 0.9, "center_y": 0.1}
+
+        
 <ClassAddScreen>:
     name: "add a class"
     
@@ -77,10 +102,8 @@ ScreenManager:
 class MainScreen(Screen):
     pass
 
-
 class SettingsScreen(Screen):
     pass
-
 
 class ClassAddScreen(Screen):
     pass
