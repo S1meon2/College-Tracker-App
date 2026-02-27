@@ -1,161 +1,19 @@
 from kivymd.app import MDApp
 from kivy.uix.screenmanager import Screen
-from kivy.lang import Builder
-
-
-# Define the screens in KV
-AppUI = '''
-ScreenManager:
-    MainScreen:
-    SettingsScreen:
-    ClassAddScreen:
-    SignInScreen:
-<MainScreen>:
-    name: "main"
-
-    MDRaisedButton:
-        text: "Sign In"
-        pos_hint: {"top": 0.98, "right": 0.11}
-        on_release: root.manager.current = "sign in"
-
-    MDRaisedButton:
-        text: "Settings"
-        pos_hint: {"top": 0.98, "right": 0.98}
-        # This is the magic line that switches screens
-        on_release: root.manager.current = "settings"
-
-    MDRaisedButton:
-        text: "Add Class"
-        pos_hint: {"center_x": 0.5, "center_y": 0.5}
-        on_release: root.manager.current = "add a class"
-
-<SettingsScreen>:
-    name: "settings"
-
-    MDLabel:
-        text: "Settings Page"
-        halign: "center"
-
-    MDRaisedButton:
-        text: "Back to Home"
-        pos_hint: {"center_x": 0.5, "center_y": 0.4}
-        on_release: root.manager.current = "main"
-        
-    MDRaisedButton:
-        text: "Connect Zybooks"
-        pos_hint: {"center_x": 0.5, "center_y": 0.8}
-        
-    MDRaisedButton:
-        text: "Connect Cengage"
-        pos_hint: {"center_x": 0.5, "center_y": 0.7}
-        
-    MDRaisedButton:
-        text: "Connect Blackboard"
-        pos_hint: {"center_x": 0.5, "center_y": 0.6}
-        
-    MDRaisedButton:
-        text: "Connect Google"
-        pos_hint: {"center_x": 0.5, "center_y": 0.2}
-        
-    MDRaisedButton:
-        text: "Auto-Update ON"
-        pos_hint: {"center_x": 0.1, "center_y": 0.1}
-        
-    MDRaisedButton:
-        text: "Update"
-        pos_hint: {"center_x": 0.9, "center_y": 0.1}
-
-        
-<ClassAddScreen>:
-    name: "add a class"
-    
-    MDRaisedButton:
-        text: "Back to Home"
-        pos_hint: {"center_x": 0.5, "center_y": 0.4}
-        on_release: root.manager.current = "main"
-        
-    MDTextField:
-        id: class_name
-        hint_text: "Enter Class Name:"
-        helper_text: "Example: Math" # From your notes
-        helper_text_mode: "on_focus"
-        icon_right: "account"
-        pos_hint: {"center_x": 0.5, "center_y": 0.9}
-
-    MDTextField:
-        id: assignment_website
-        hint_text: "Enter Assignment Website:"
-        helper_text: "Example: Blackboard" # From your notes
-        helper_text_mode: "on_focus"
-        icon_right: "key-variant"
-        pos_hint: {"center_x": 0.5, "center_y": 0.8}
-        
-    MDTextField:
-        id: class_identifier
-        hint_text: "Enter Class Identifier:"
-        helper_text: "Example: MATH-126-009" # From your notes
-        helper_text_mode: "on_focus"
-        icon_right: "key-variant"
-        pos_hint: {"center_x": 0.5, "center_y": 0.7}
-
-    MDRaisedButton:
-        text: "+ ADD this class"
-        pos_hint: {"center_x": 0.5, "center_y": 0.6}
-        on_release: root.manager.current = "main"
-        
-<SignInScreen>:
-    name: "sign in"
-    
-    MDLabel:
-        text: "Create Account"
-        pos_hint: {"center_x": 0.925, "center_y": 0.9}
-        
-    MDRaisedButton:
-        text: "Back to Home"
-        pos_hint: {"center_x": 0.5, "center_y": 0.4}
-        on_release: root.manager.current = "main"
-
-    MDTextField:
-        id: username_field
-        hint_text: "Create username:"
-        helper_text: "Example: Simeon" # From your notes
-        helper_text_mode: "on_focus"
-        icon_right: "account"
-        pos_hint: {"center_x": 0.5, "center_y": 0.8}
-
-    MDTextField:
-        id: pin_field
-        hint_text: "Create pin:"
-        helper_text: "Example: 19674" # From your notes
-        helper_text_mode: "on_focus"
-        icon_right: "key-variant"
-        password: False  # This hides the numbers as you type
-        pos_hint: {"center_x": 0.5, "center_y": 0.7}
-
-    MDRaisedButton:
-        text: "Submit"
-        pos_hint: {"center_x": 0.5, "center_y": 0.6}
-        on_release: root.manager.current = "main"
-'''
-
 
 # We need these empty classes so Python recognizes the KV tags
-class MainScreen(Screen):
-    pass
+class MainScreen(Screen): pass
+class SettingsScreen(Screen): pass
+class ClassAddScreen(Screen): pass
+class SignInScreen(Screen): pass
 
-class SettingsScreen(Screen):
-    pass
-
-class ClassAddScreen(Screen):
-    pass
-
-class SignInScreen(Screen):
-    pass
-
+# Build and Modify the app
 class UBubbleApp(MDApp):
     def build(self):
-        return Builder.load_string(AppUI)
+        self.theme_cls.primary_palette = "Red"
+        self.theme_cls.theme_style = "Dark"
+        return
 
-
+# Run
 if __name__ == "__main__":
     UBubbleApp().run()
