@@ -69,31 +69,72 @@ ScreenManager:
 <ClassAddScreen>:
     name: "add a class"
     
-    MDLabel:
-        text: "+ ADD a class!"
-        halign: "center"
-        
     MDRaisedButton:
         text: "Back to Home"
         pos_hint: {"center_x": 0.5, "center_y": 0.4}
+        on_release: root.manager.current = "main"
+        
+    MDTextField:
+        id: class_name
+        hint_text: "Enter Class Name:"
+        helper_text: "Example: Math" # From your notes
+        helper_text_mode: "on_focus"
+        icon_right: "account"
+        pos_hint: {"center_x": 0.5, "center_y": 0.9}
+
+    MDTextField:
+        id: assignment_website
+        hint_text: "Enter Assignment Website:"
+        helper_text: "Example: Blackboard" # From your notes
+        helper_text_mode: "on_focus"
+        icon_right: "key-variant"
+        pos_hint: {"center_x": 0.5, "center_y": 0.8}
+        
+    MDTextField:
+        id: class_identifier
+        hint_text: "Enter Class Identifier:"
+        helper_text: "Example: MATH-126-009" # From your notes
+        helper_text_mode: "on_focus"
+        icon_right: "key-variant"
+        pos_hint: {"center_x": 0.5, "center_y": 0.7}
+
+    MDRaisedButton:
+        text: "+ ADD this class"
+        pos_hint: {"center_x": 0.5, "center_y": 0.6}
         on_release: root.manager.current = "main"
         
 <SignInScreen>:
     name: "sign in"
     
     MDLabel:
-        text: "create username: "
-        halign: "left"
-        valign: "top"
-        
-    MDLabel:
-        text: "create pin number:"
-        halign: "right"
-        valign: "top"
+        text: "Create Account"
+        pos_hint: {"center_x": 0.925, "center_y": 0.9}
         
     MDRaisedButton:
         text: "Back to Home"
         pos_hint: {"center_x": 0.5, "center_y": 0.4}
+        on_release: root.manager.current = "main"
+
+    MDTextField:
+        id: username_field
+        hint_text: "Create username:"
+        helper_text: "Example: Simeon" # From your notes
+        helper_text_mode: "on_focus"
+        icon_right: "account"
+        pos_hint: {"center_x": 0.5, "center_y": 0.8}
+
+    MDTextField:
+        id: pin_field
+        hint_text: "Create pin:"
+        helper_text: "Example: 19674" # From your notes
+        helper_text_mode: "on_focus"
+        icon_right: "key-variant"
+        password: False  # This hides the numbers as you type
+        pos_hint: {"center_x": 0.5, "center_y": 0.7}
+
+    MDRaisedButton:
+        text: "Submit"
+        pos_hint: {"center_x": 0.5, "center_y": 0.6}
         on_release: root.manager.current = "main"
 '''
 
