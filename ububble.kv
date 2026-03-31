@@ -3,6 +3,7 @@ ScreenManager:
     SettingsScreen:
     ClassAddScreen:
     SignInScreen:
+    WebsiteDataScreen:
 <MainScreen>:
     name: "main"
 
@@ -37,6 +38,8 @@ ScreenManager:
     MDRaisedButton:
         text: "Connect Zybooks"
         pos_hint: {"center_x": 0.5, "center_y": 0.8}
+        on_press: root.enter_zybooks()
+        on_release: root.manager.current = "enter web data"
 
     MDRaisedButton:
         text: "Connect Cengage"
@@ -57,6 +60,41 @@ ScreenManager:
     MDRaisedButton:
         text: "Update"
         pos_hint: {"center_x": 0.9, "center_y": 0.1}
+
+<WebsiteDataScreen>:
+    name: "enter web data"
+
+    MDLabel:
+        text: "Add Account"
+        pos_hint: {"center_x": 0.925, "center_y": 0.9}
+
+    MDRaisedButton:
+        text: "Back to Home"
+        pos_hint: {"center_x": 0.5, "center_y": 0.4}
+        on_release: root.manager.current = "main"
+
+    MDTextField:
+        id: username_field
+        hint_text: "Enter email or username:"
+        helper_text: "Example: Simeon@gmail.com" # From your notes
+        helper_text_mode: "on_focus"
+        icon_right: "account"
+        pos_hint: {"center_x": 0.5, "center_y": 0.8}
+
+    MDTextField:
+        id: password_field
+        hint_text: "Enter password:"
+        helper_text: "Example: HelloWorld123" # From your notes
+        helper_text_mode: "on_focus"
+        icon_right: "key-variant"
+        password: False  # This hides the numbers as you type
+        pos_hint: {"center_x": 0.5, "center_y": 0.7}
+
+    MDRaisedButton:
+        text: "Submit"
+        pos_hint: {"center_x": 0.5, "center_y": 0.6}
+        on_press: root.save_input()
+        on_release: root.manager.current = "main"
 
 
 <ClassAddScreen>:
