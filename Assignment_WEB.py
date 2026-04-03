@@ -1,14 +1,17 @@
-#You're going to need to install selenium in the terminal: pip install selenium
-#  vvv Will always ask for assignment to find
-while (True) :
-    from selenium import webdriver
-    from selenium.webdriver.common.by import By
+
+
+
+
+import time
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+
+web = ""
+
+def scrape_cengage(name, userName, userPass):
     import time
 
-    print("What website do you need to get your assignments from?  Options: Webassign, Zyooks, Blackboard --> ")
-    web = input()
-
-    if web == "Webassign":
+    if name == "cengage":
         #   Open Chrome
         page_to_scrape = webdriver.Chrome()
 
@@ -17,27 +20,24 @@ while (True) :
 
         #   Press Sign In
         page_to_scrape.find_element(By.ID, "menu-item-888").click()
-        
         #wait to load
         time.sleep(3)
-        
         #   Input Username
         username = page_to_scrape.find_element(By.ID, "idp-discovery-username")
-        username.send_keys("/*username*/")
+        username.send_keys(userName)
         #   Press Next
         page_to_scrape.find_element(By.ID, "idp-discovery-submit").click()
         #wait to load
         time.sleep(3)
         #   Input Username
         password = page_to_scrape.find_element(By.ID, "okta-signin-password")
-        my_pass = "/*password*/"
-        password.send_keys(my_pass)
+        password.send_keys(userPass)
         #   Sign in button
         page_to_scrape.find_element(By.ID, "okta-signin-submit").click()
         #wait to load
         time.sleep(8)
         #   The Page we want
-        page_to_scrape.get("https://www.webassign.net/v4cgi/student.pl?action=home/index&course=1184427,1560186&UserPass=854347c687428fbda172c9195f97c9e5")
+        page_to_scrape.get("https://www.webassign.net/v4cgi/student.pl?action=home/index&course=1224094,1606151&UserPass=c6d721955278892924e0df4d78ff9009")
         #wait to load
         time.sleep(8)
 
@@ -46,6 +46,7 @@ while (True) :
         #   Pull the name of each assignment and thier corresponding times/dates
         names = page_to_scrape.find_elements(By.CLASS_NAME, "css-4qmd1n")
         times = page_to_scrape.find_elements(By.CLASS_NAME, "css-atykpv")
+
 
         #   Each is printed
         print()
@@ -62,7 +63,11 @@ while (True) :
         #--print(page_to_scrape.page_source)--
         #-------------^
 
-    if web == "Zybooks":
+def scrape_zybooks(name, userName, userPass):
+    import time
+
+    if name == "zybooks":
+
         #   Open Chrome
         page_to_scrape = webdriver.Chrome()
 
@@ -71,18 +76,19 @@ while (True) :
 
         #   Input Username
         username = page_to_scrape.find_element(By.CSS_SELECTOR, "input[type='email']")
-        username.send_keys("/*email*/")
+        username.send_keys(userName)
         #   Input Password
         password = page_to_scrape.find_element(By.CSS_SELECTOR, "input[type='password']")
-        my_pass = "/*password*/"
-        password.send_keys(my_pass)
+        password.send_keys(userPass)
+
+        time.sleep(15)
         #   Sign in button
         page_to_scrape.find_element(By.CLASS_NAME, "title").click()
         # wait to load
-        time.sleep(8)
+        time.sleep(3)
         #   The Page we want
         page_to_scrape.get(
-            "https://learn.zybooks.com/zybook/UACS100Fall2025?selectedPanel=assignments-panel")
+            "https://learn.zybooks.com/zybook/UACS101YessickSpring2026?selectedPanel=assignments-panel")
         # wait to load
         time.sleep(15)
 
@@ -108,7 +114,10 @@ while (True) :
         #--print(page_to_scrape.page_source)--
         # -------------^
 
-    if web == "Blackboard":
+def scrape_blackboard(name, userName, userPass):
+    import time
+
+    if name == "blackboard":
         #   Open Chrome
         page_to_scrape = webdriver.Chrome()
 
@@ -120,11 +129,10 @@ while (True) :
         page_to_scrape.find_element(By.CLASS_NAME, "button-1").click()
         #   Input Username
         username = page_to_scrape.find_element(By.ID, "user_id")
-        username.send_keys("/*username*/")
+        username.send_keys(userName)
         #   Input Password
         password = page_to_scrape.find_element(By.ID, "password")
-        my_pass = "/*password*/"
-        password.send_keys(my_pass)
+        password.send_keys(userPass)
         #   Sign in button
         page_to_scrape.find_element(By.ID, "entry-login").click()
         # wait to load
