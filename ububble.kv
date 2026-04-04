@@ -136,7 +136,7 @@ ScreenManager:
     MDRaisedButton:
         text: "+ ADD this class"
         pos_hint: {"center_x": 0.5, "center_y": 0.6}
-        on_press: root.enter_className(); root.enter_classID(); root.enter_classWeb(); root.save_data()
+        on_press: root.enter_className(); root.enter_classID(); root.enter_classWeb(); root.save_data(); root.print_assignments()
         on_release: root.manager.current = "main"
 
 <SignInScreen>:
