@@ -165,3 +165,4 @@ def scrape_blackboard(name, userName, userPass):
         # If you want to check all the html use this:
         # --print(page_to_scrape.page_source)--
         # -------------^
+

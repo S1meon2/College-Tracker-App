@@ -2,6 +2,7 @@ from kivymd.app import MDApp
 from kivy.uix.screenmanager import Screen
 from dataclasses import dataclass
 from Assignment_WEB import scrape_cengage, scrape_zybooks, scrape_blackboard
+from ububbleDB import send_info, recieve_info
 
 #Use below to make gobal variables
 """MDApp.get_running_app()."""
@@ -29,6 +30,10 @@ class SettingsScreen(Screen):
         MDApp.get_running_app().websiteName = "cengage"
     def enter_blackboard(self):
         MDApp.get_running_app().websiteName = "blackboard"
+    def update(self):
+        recieve_info()
+
+
 class ClassAddScreen(Screen):
     def enter_className(self):
         MDApp.get_running_app().className = self.ids.class_name.text
@@ -48,6 +53,7 @@ class ClassAddScreen(Screen):
             scrape_blackboard(MDApp.get_running_app().blackboardSN.name, MDApp.get_running_app().blackboardSN.username, MDApp.get_running_app().blackboardSN.password)
 
 
+
 class SignInScreen(Screen): pass
 class WebsiteDataScreen(Screen):
     def save_input(self):
@@ -56,12 +62,15 @@ class WebsiteDataScreen(Screen):
     def save_data(self):
         if MDApp.get_running_app().websiteName == "cengage":
             MDApp.get_running_app().cengageSN = WebsiteSN(name=MDApp.get_running_app().websiteName, username=MDApp.get_running_app().user_name, password=MDApp.get_running_app().user_pass)
+            send_info(MDApp.get_running_app().cengageSN.name, MDApp.get_running_app().cengageSN.username,MDApp.get_running_app().cengageSN.password)
             print(MDApp.get_running_app().cengageSN)
         if MDApp.get_running_app().websiteName == "zybooks":
             MDApp.get_running_app().zybooksSN = WebsiteSN(name=MDApp.get_running_app().websiteName, username=MDApp.get_running_app().user_name, password=MDApp.get_running_app().user_pass)
+            send_info(MDApp.get_running_app().zybooksSN.name, MDApp.get_running_app().zybooksSN.username,MDApp.get_running_app().zybooksSN.password)
             print(MDApp.get_running_app().zybooksSN)
         if MDApp.get_running_app().websiteName == "blackboard":
             MDApp.get_running_app().blackboardSN = WebsiteSN(name=MDApp.get_running_app().websiteName, username=MDApp.get_running_app().user_name, password=MDApp.get_running_app().user_pass)
+            send_info(MDApp.get_running_app().blackboardSN.name, MDApp.get_running_app().blackboardSN.username,MDApp.get_running_app().blackboardSN.password)
             print(MDApp.get_running_app().blackboardSN)
 
 
