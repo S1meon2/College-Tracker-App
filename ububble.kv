@@ -64,6 +64,7 @@ ScreenManager:
     MDRaisedButton:
         text: "Update"
         pos_hint: {"center_x": 0.9, "center_y": 0.1}
+        on_press: root.update()
 
 <WebsiteDataScreen>:
     name: "enter web data"
@@ -120,7 +121,7 @@ ScreenManager:
     MDTextField:
         id: assignment_website
         hint_text: "Enter Assignment Website:"
-        helper_text: "Example: Blackboard"
+        helper_text: "Example: blackboard"
         helper_text_mode: "on_focus"
         icon_right: "key-variant"
         pos_hint: {"center_x": 0.5, "center_y": 0.8}
