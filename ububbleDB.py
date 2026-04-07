@@ -39,17 +39,18 @@ def recieve_info():
     cursor.execute("SELECT * FROM login")
     logins = cursor.fetchall()
 
+    all_data = " "
     for login in logins:
 
         if login[0] == "cengage":
-            scrape_cengage(login[0], login[1], login[2])
+            all_data += scrape_cengage(login[0], login[1], login[2])
 
         if login[0] == "zybooks":
-            scrape_zybooks(login[0], login[1], login[2])
+           all_data += scrape_zybooks(login[0], login[1], login[2])
 
         if login[0] == "blackboard":
-            scrape_blackboard(login[0], login[1], login[2])
+            all_data += scrape_blackboard(login[0], login[1], login[2])
 
-
+    return all_data
 
 
