@@ -3,6 +3,7 @@ from kivy.uix.screenmanager import Screen
 from dataclasses import dataclass
 from Assignment_WEB import scrape_cengage, scrape_zybooks, scrape_blackboard
 from ububbleDB import send_info, recieve_info
+from G_Tools import get_tasks_service, sync_assignments_to_tasks
 
 #Use below to make gobal variables
 """MDApp.get_running_app()."""
@@ -30,8 +31,23 @@ class SettingsScreen(Screen):
         MDApp.get_running_app().websiteName = "cengage"
     def enter_blackboard(self):
         MDApp.get_running_app().websiteName = "blackboard"
+    #def update(self):
+        #recieve_info()
+
+    def connect_google(self):
+        # This will trigger the browser popup to create your token.json
+        print("Opening browser for Google Authentication...")
+        get_tasks_service()
+
     def update(self):
-        recieve_info()
+        # 1. Run the scrapers and get the raw text
+        raw_text = recieve_info()
+
+        # 2. Send that text to Gemini and then to Google Tasks
+        if raw_text:
+            sync_assignments_to_tasks(raw_text)
+        else:
+            print("No assignments found to sync.")
 
 
 class ClassAddScreen(Screen):

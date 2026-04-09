@@ -47,15 +47,17 @@ def scrape_cengage(name, userName, userPass):
         names = page_to_scrape.find_elements(By.CLASS_NAME, "css-4qmd1n")
         times = page_to_scrape.find_elements(By.CLASS_NAME, "css-atykpv")
 
-
+        all = ""
         #   Each is printed
         print()
         for name, time in zip(names, times):
             print(name.text + " - " + time.text)
+            all += " " + name.text + " - " + time.text
         print()
 
         #   End the webscraping
         page_to_scrape.quit()
+        return all
 
         #----------------------------------------------------------------------------------------
 
@@ -98,15 +100,17 @@ def scrape_zybooks(name, userName, userPass):
         names = page_to_scrape.find_elements(By.CSS_SELECTOR, "h3[class='assignment-title my-auto primary-font-regular']")
         times = page_to_scrape.find_elements(By.CSS_SELECTOR, "div[class='due-date-text body-text text-13 flex items-center']")
 
+        all = ""
         #   Each is printed
         print()
         for name, time in zip(names, times):
             print(name.text + " - " + time.text)
+            all += " " + name.text + " - " + time.text
         print()
-
 
         #   End the webscraping
         page_to_scrape.quit()
+        return all
 
         # ----------------------------------------------------------------------------------------
 
@@ -151,15 +155,17 @@ def scrape_blackboard(name, userName, userPass):
         times = page_to_scrape.find_elements(By.CSS_SELECTOR,
                                              "div[class='content']")
 
+        all = ""
         #   Each is printed
         print()
         for name, time in zip(names, times):
             print(name.text + " - " + time.text)
+            all += " " + name.text + " - " + time.text
         print()
 
         #   End the webscraping
         page_to_scrape.quit()
-
+        return all
         # ----------------------------------------------------------------------------------------
 
         # If you want to check all the html use this:
