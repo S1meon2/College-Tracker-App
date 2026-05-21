@@ -4,173 +4,350 @@ ScreenManager:
     ClassAddScreen:
     SignInScreen:
     WebsiteDataScreen:
+
 <MainScreen>:
     name: "main"
+    MDFloatLayout:
 
-    MDRaisedButton:
-        text: "Sign In"
-        pos_hint: {"top": 0.98, "right": 0.11}
-        on_release: root.manager.current = "sign in"
+        # --- Top Navigation ---
+        MDRaisedButton:
+            text: "Sign in"
+            elevation: 2
+            pos_hint: {"top": 0.96, "x": 0.04}
+            on_release: root.manager.current = "sign in"
 
-    MDRaisedButton:
-        text: "Settings"
-        pos_hint: {"top": 0.98, "right": 0.98}
-        # This is the magic line that switches screens
-        on_release: root.manager.current = "settings"
+        MDIconButton:
+            icon: "cog"
+            pos_hint: {"top": 0.97, "right": 0.96}
+            on_release: root.manager.current = "settings"
 
-    MDRaisedButton:
-        text: "Add Class"
-        pos_hint: {"center_x": 0.5, "center_y": 0.5}
-        on_release: root.manager.current = "add a class"
+        # --- Header ---
+        MDLabel:
+            text: "U-bubble"
+            font_style: "H3"
+            bold: True
+            halign: "center"
+            pos_hint: {"center_y": 0.88}
+            theme_text_color: "Primary"
+
+        # --- Classes Card ---
+        MDCard:
+            orientation: "vertical"
+            size_hint: 0.85, 0.25
+            pos_hint: {"center_x": 0.5, "center_y": 0.65}
+            elevation: 2
+            radius: [16]
+            padding: "16dp"
+
+            MDLabel:
+                text: "Classes"
+                font_style: "H5"
+                bold: True
+                halign: "center"
+                size_hint_y: None
+                height: self.texture_size[1]
+
+            Widget: # Spacer
+
+            MDBoxLayout:
+                orientation: "horizontal"
+                spacing: "20dp"
+                pos_hint: {"center_x": 0.5}
+                size_hint_x: 0.8
+
+                MDFillRoundFlatIconButton:
+                    text: "Edit"
+                    icon: "pencil"
+                    pos_hint: {"center_y": 0.5}
+                    size_hint_x: 0.5
+
+                MDFillRoundFlatIconButton:
+                    text: "Add"
+                    icon: "plus"
+                    pos_hint: {"center_y": 0.5}
+                    size_hint_x: 0.5
+                    on_release: root.manager.current = "add a class"
+
+        # --- Updates Card ---
+        MDCard:
+            orientation: "vertical"
+            size_hint: 0.85, 0.25
+            pos_hint: {"center_x": 0.5, "center_y": 0.35}
+            elevation: 2
+            radius: [16]
+            padding: "16dp"
+
+            MDLabel:
+                text: "Update"
+                font_style: "H5"
+                bold: True
+                halign: "center"
+                size_hint_y: None
+                height: self.texture_size[1]
+
+            Widget: # Spacer
+
+            MDBoxLayout:
+                orientation: "horizontal"
+                spacing: "20dp"
+                pos_hint: {"center_x": 0.5}
+                size_hint_x: 0.8
+
+                MDRaisedButton:
+                    text: "Auto"
+                    pos_hint: {"center_y": 0.5}
+                    size_hint_x: 0.5
+
+                MDRaisedButton:
+                    text: "Manual"
+                    pos_hint: {"center_y": 0.5}
+                    size_hint_x: 0.5
 
 <SettingsScreen>:
     name: "settings"
+    MDFloatLayout:
 
-    MDLabel:
-        text: "Settings Page"
-        halign: "center"
+        MDLabel:
+            text: "Settings"
+            font_style: "H4"
+            bold: True
+            halign: "center"
+            pos_hint: {"top": 0.90}
 
-    MDRaisedButton:
-        text: "Back to Home"
-        pos_hint: {"center_x": 0.5, "center_y": 0.4}
-        on_release: root.manager.current = "main"
+        MDIconButton:
+            icon: "home"
+            pos_hint: {"top": 0.97, "right": 0.96}
+            on_release: root.manager.current = "main"
 
-    MDRaisedButton:
-        text: "Connect Zybooks"
-        pos_hint: {"center_x": 0.5, "center_y": 0.8}
-        on_press: root.enter_zybooks()
-        on_release: root.manager.current = "enter web data"
+        # --- Main Settings Card ---
+        MDCard:
+            orientation: "vertical"
+            size_hint: 0.85, 0.65
+            pos_hint: {"center_x": 0.5, "center_y": 0.48}
+            elevation: 2
+            radius: [16]
+            padding: "24dp"
+            spacing: "20dp"
 
-    MDRaisedButton:
-        text: "Connect Cengage"
-        pos_hint: {"center_x": 0.5, "center_y": 0.7}
-        on_press: root.enter_cengage()
-        on_release: root.manager.current = "enter web data"
+            MDFillRoundFlatIconButton:
+                icon: "google"
+                text: "Connect Google"
+                md_bg_color: 0.8, 0.1, 0.1, 1  # Professional Red
+                font_size: "18sp"
+                pos_hint: {"center_x": 0.5}
+                size_hint_x: 0.9
+                on_press: root.connect_google()
 
-    MDRaisedButton:
-        text: "Connect Blackboard"
-        pos_hint: {"center_x": 0.5, "center_y": 0.6}
-        on_press: root.enter_blackboard()
-        on_release: root.manager.current = "enter web data"
+            MDSeparator:
+                size_hint_x: 0.6
+                pos_hint: {"center_x": 0.5}
 
-    MDRaisedButton:
-        text: "Connect Google"
-        pos_hint: {"center_x": 0.5, "center_y": 0.2}
-        on_press: root.connect_google()
+            MDRaisedButton:
+                text: "Connect Blackboard"
+                pos_hint: {"center_x": 0.5}
+                size_hint_x: 0.8
+                on_press: root.enter_blackboard()
+                on_release: root.manager.current = "enter web data"
 
-    MDRaisedButton:
-        text: "Auto-Update ON"
-        pos_hint: {"center_x": 0.1, "center_y": 0.1}
+            MDRaisedButton:
+                text: "Connect Zybooks"
+                pos_hint: {"center_x": 0.5}
+                size_hint_x: 0.8
+                on_press: root.enter_zybooks()
+                on_release: root.manager.current = "enter web data"
 
-    MDRaisedButton:
-        text: "Update"
-        pos_hint: {"center_x": 0.9, "center_y": 0.1}
-        on_press: root.update()
+            MDRaisedButton:
+                text: "Connect Cengage"
+                pos_hint: {"center_x": 0.5}
+                size_hint_x: 0.8
+                on_press: root.enter_cengage()
+                on_release: root.manager.current = "enter web data"
+
+            Widget: # Bottom Spacer inside card
+
+        # --- Bottom System Update Bar ---
+        MDBoxLayout:
+            orientation: "horizontal"
+            size_hint: 0.85, None
+            height: "48dp"
+            pos_hint: {"center_x": 0.5, "y": 0.05}
+
+            MDLabel:
+                text: "Auto-Update: ON"
+                theme_text_color: "Hint"
+                halign: "left"
+
+            MDIconButton:
+                icon: "refresh"
+                on_press: root.update()
+
+
 
 <WebsiteDataScreen>:
     name: "enter web data"
+    MDFloatLayout:
 
-    MDLabel:
-        text: "Add Account"
-        pos_hint: {"center_x": 0.925, "center_y": 0.9}
+        MDIconButton:
+            icon: "home"
+            pos_hint: {"top": 0.97, "right": 0.96}
+            on_release: root.manager.current = "main"
 
-    MDRaisedButton:
-        text: "Back to Home"
-        pos_hint: {"center_x": 0.5, "center_y": 0.4}
-        on_release: root.manager.current = "main"
+        # --- Form Card ---
+        MDCard:
+            orientation: "vertical"
+            size_hint: 0.85, 0.65
+            pos_hint: {"center_x": 0.5, "center_y": 0.5}
+            elevation: 2
+            radius: [16]
+            padding: "24dp"
+            spacing: "20dp"
 
-    MDTextField:
-        id: username_field
-        hint_text: "Enter email or username:"
-        helper_text: "Example: Simeon@gmail.com" # From your notes
-        helper_text_mode: "on_focus"
-        icon_right: "account"
-        pos_hint: {"center_x": 0.5, "center_y": 0.8}
+            MDLabel:
+                text: "Add Account"
+                font_style: "H4"
+                bold: True
+                halign: "center"
+                size_hint_y: None
+                height: self.texture_size[1]
+                padding_y: "15dp"
 
-    MDTextField:
-        id: password_field
-        hint_text: "Enter password:"
-        helper_text: "Example: HelloWorld123" # From your notes
-        helper_text_mode: "on_focus"
-        icon_right: "key-variant"
-        password: False  # This hides the numbers as you type
-        pos_hint: {"center_x": 0.5, "center_y": 0.7}
+            MDTextField:
+                id: username_field
+                hint_text: "Enter email or username:"
+                helper_text: "Example: Simeon@gmail.com"
+                helper_text_mode: "on_focus"
+                icon_right: "account"
+                mode: "rectangle"
 
-    MDRaisedButton:
-        text: "Submit"
-        pos_hint: {"center_x": 0.5, "center_y": 0.6}
-        on_press: root.save_input(); root.save_data()
-        on_release: root.manager.current = "main"
+            MDTextField:
+                id: password_field
+                hint_text: "Enter password:"
+                helper_text: "Example: HelloWorld123"
+                helper_text_mode: "on_focus"
+                icon_right: "key-variant"
+                password: True  # Changed to True so it properly hides the characters
+                mode: "rectangle"
+
+            Widget: # Spacer
+
+            MDFillRoundFlatButton:
+                text: "Submit"
+                pos_hint: {"center_x": 0.5}
+                size_hint_x: 0.8
+                on_press: root.save_input(); root.save_data()
+                on_release: root.manager.current = "main"
 
 
 <ClassAddScreen>:
     name: "add a class"
+    MDFloatLayout:
 
-    MDRaisedButton:
-        text: "Back to Home"
-        pos_hint: {"center_x": 0.5, "center_y": 0.4}
-        on_release: root.manager.current = "main"
+        MDIconButton:
+            icon: "home"
+            pos_hint: {"top": 0.97, "right": 0.96}
+            on_release: root.manager.current = "main"
 
-    MDTextField:
-        id: class_name
-        hint_text: "Enter Class Name:"
-        helper_text: "Example: Math"
-        helper_text_mode: "on_focus"
-        icon_right: "account"
-        pos_hint: {"center_x": 0.5, "center_y": 0.9}
+        # --- Form Card ---
+        MDCard:
+            orientation: "vertical"
+            size_hint: 0.85, 0.75
+            pos_hint: {"center_x": 0.5, "center_y": 0.5}
+            elevation: 2
+            radius: [16]
+            padding: "24dp"
+            spacing: "15dp"
 
-    MDTextField:
-        id: assignment_website
-        hint_text: "Enter Assignment Website:"
-        helper_text: "Example: blackboard"
-        helper_text_mode: "on_focus"
-        icon_right: "key-variant"
-        pos_hint: {"center_x": 0.5, "center_y": 0.8}
+            MDLabel:
+                text: "New Class"
+                font_style: "H4"
+                bold: True
+                halign: "center"
+                size_hint_y: None
+                height: self.texture_size[1]
+                padding_y: "10dp"
 
-    MDTextField:
-        id: class_identifier
-        hint_text: "Enter Class Identifier:"
-        helper_text: "Example: MATH-126-009"
-        helper_text_mode: "on_focus"
-        icon_right: "key-variant"
-        pos_hint: {"center_x": 0.5, "center_y": 0.7}
+            MDTextField:
+                id: class_name
+                hint_text: "Enter Class Name:"
+                helper_text: "Example: Math"
+                helper_text_mode: "on_focus"
+                icon_right: "book-open-outline"
+                mode: "rectangle"
 
-    MDRaisedButton:
-        text: "+ ADD this class"
-        pos_hint: {"center_x": 0.5, "center_y": 0.6}
-        on_press: root.enter_className(); root.enter_classID(); root.enter_classWeb(); root.save_data(); root.print_assignments()
-        on_release: root.manager.current = "main"
+            MDTextField:
+                id: assignment_website
+                hint_text: "Enter Assignment Website:"
+                helper_text: "Example: blackboard"
+                helper_text_mode: "on_focus"
+                icon_right: "web"
+                mode: "rectangle"
+
+            MDTextField:
+                id: class_identifier
+                hint_text: "Enter Class Identifier:"
+                helper_text: "Example: MATH-126-009"
+                helper_text_mode: "on_focus"
+                icon_right: "tag"
+                mode: "rectangle"
+
+            Widget: # Spacer
+
+            MDFillRoundFlatButton:
+                text: "+ ADD this class"
+                pos_hint: {"center_x": 0.5}
+                size_hint_x: 0.8
+                on_press: root.enter_className(); root.enter_classID(); root.enter_classWeb(); root.save_data(); root.print_assignments()
+                on_release: root.manager.current = "main"
 
 <SignInScreen>:
     name: "sign in"
+    MDFloatLayout:
 
-    MDLabel:
-        text: "Create Account"
-        pos_hint: {"center_x": 0.925, "center_y": 0.9}
+        MDIconButton:
+            icon: "home"
+            pos_hint: {"top": 0.97, "right": 0.96}
+            on_release: root.manager.current = "main"
 
-    MDRaisedButton:
-        text: "Back to Home"
-        pos_hint: {"center_x": 0.5, "center_y": 0.4}
-        on_release: root.manager.current = "main"
+        # --- Form Card ---
+        MDCard:
+            orientation: "vertical"
+            size_hint: 0.85, 0.65
+            pos_hint: {"center_x": 0.5, "center_y": 0.5}
+            elevation: 2
+            radius: [16]
+            padding: "24dp"
+            spacing: "20dp"
 
-    MDTextField:
-        id: username_field
-        hint_text: "Create username:"
-        helper_text: "Example: Simeon" # From your notes
-        helper_text_mode: "on_focus"
-        icon_right: "account"
-        pos_hint: {"center_x": 0.5, "center_y": 0.8}
+            MDLabel:
+                text: "Create Account"
+                font_style: "H4"
+                bold: True
+                halign: "center"
+                size_hint_y: None
+                height: self.texture_size[1]
+                padding_y: "15dp"
 
-    MDTextField:
-        id: pin_field
-        hint_text: "Create pin:"
-        helper_text: "Example: 19674" # From your notes
-        helper_text_mode: "on_focus"
-        icon_right: "key-variant"
-        password: False  # This hides the numbers as you type
-        pos_hint: {"center_x": 0.5, "center_y": 0.7}
+            MDTextField:
+                id: username_field
+                hint_text: "Create username:"
+                helper_text: "Example: Simeon"
+                helper_text_mode: "on_focus"
+                icon_right: "account"
+                mode: "rectangle"
 
-    MDRaisedButton:
-        text: "Submit"
-        pos_hint: {"center_x": 0.5, "center_y": 0.6}
-        on_release: root.manager.current = "main"
+            MDTextField:
+                id: pin_field
+                hint_text: "Create pin:"
+                helper_text: "Example: 19674"
+                helper_text_mode: "on_focus"
+                icon_right: "key-variant"
+                password: True
+                mode: "rectangle"
+
+            Widget: # Spacer
+
+            MDFillRoundFlatButton:
+                text: "Submit"
+                pos_hint: {"center_x": 0.5}
+                size_hint_x: 0.8
+                on_release: root.manager.current = "main"
