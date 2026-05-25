@@ -88,7 +88,31 @@ class WebsiteDataScreen(Screen):
             MDApp.get_running_app().blackboardSN = WebsiteSN(name=MDApp.get_running_app().websiteName, username=MDApp.get_running_app().user_name, password=MDApp.get_running_app().user_pass)
             send_info(MDApp.get_running_app().blackboardSN.name, MDApp.get_running_app().blackboardSN.username,MDApp.get_running_app().blackboardSN.password)
             print(MDApp.get_running_app().blackboardSN)
+class ClassEditScreen(Screen):
+    def enter_className(self):
+        MDApp.get_running_app().className = self.ids.class_name.text
 
+    def enter_classWeb(self):
+        MDApp.get_running_app().classWeb = self.ids.assignment_website.text
+
+    def enter_classID(self):
+        MDApp.get_running_app().classID = self.ids.class_identifier.text
+
+    def save_data(self):
+        courseData = Course(name=MDApp.get_running_app().className, website=MDApp.get_running_app().classWeb,
+                            id=MDApp.get_running_app().classID)
+        print(courseData)
+
+    def print_assignments(self):
+        if MDApp.get_running_app().classWeb == "cengage":
+            scrape_cengage(MDApp.get_running_app().cengageSN.name, MDApp.get_running_app().cengageSN.username,
+                           MDApp.get_running_app().cengageSN.password)
+        if MDApp.get_running_app().classWeb == "zybooks":
+            scrape_zybooks(MDApp.get_running_app().zybooksSN.name, MDApp.get_running_app().zybooksSN.username,
+                           MDApp.get_running_app().zybooksSN.password)
+        if MDApp.get_running_app().classWeb == "blackboard":
+            scrape_blackboard(MDApp.get_running_app().blackboardSN.name, MDApp.get_running_app().blackboardSN.username,
+                              MDApp.get_running_app().blackboardSN.password)
 
 
 # Build and Modify the app

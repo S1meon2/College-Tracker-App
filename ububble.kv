@@ -4,6 +4,7 @@ ScreenManager:
     ClassAddScreen:
     SignInScreen:
     WebsiteDataScreen:
+    ClassEditScreen:
 
 <MainScreen>:
     name: "main"
@@ -60,6 +61,7 @@ ScreenManager:
                     icon: "pencil"
                     pos_hint: {"center_y": 0.5}
                     size_hint_x: 0.5
+                    on_release: root.manager.current = "edit class"
 
                 MDFillRoundFlatIconButton:
                     text: "Add"
@@ -350,4 +352,66 @@ ScreenManager:
                 text: "Submit"
                 pos_hint: {"center_x": 0.5}
                 size_hint_x: 0.8
+                on_release: root.manager.current = "main"
+
+<ClassEditScreen>:
+    name: "edit class"
+
+    MDFloatLayout:
+
+        MDIconButton:
+            icon: "home"
+            pos_hint: {"top": 0.97, "right": 0.96}
+            on_release: root.manager.current = "main"
+
+        # --- Form Card ---
+        MDCard:
+            orientation: "vertical"
+            size_hint: 0.85, 0.75
+            pos_hint: {"center_x": 0.5, "center_y": 0.5}
+            elevation: 2
+            radius: [16]
+            padding: "24dp"
+            spacing: "15dp"
+
+            MDLabel:
+                text: "Edit Class"
+                font_style: "H4"
+                bold: True
+                halign: "center"
+                size_hint_y: None
+                height: self.texture_size[1]
+                padding_y: "10dp"
+
+            MDTextField:
+                id: class_name
+                hint_text: "new Class Name:"
+                helper_text: "Example: Math"
+                helper_text_mode: "on_focus"
+                icon_right: "book-open-outline"
+                mode: "rectangle"
+
+            MDTextField:
+                id: assignment_website
+                hint_text: "new Assignment Website:"
+                helper_text: "Example: blackboard"
+                helper_text_mode: "on_focus"
+                icon_right: "web"
+                mode: "rectangle"
+
+            MDTextField:
+                id: class_identifier
+                hint_text: "Enter Class Identifier:"
+                helper_text: "Example: MATH-126-009"
+                helper_text_mode: "on_focus"
+                icon_right: "tag"
+                mode: "rectangle"
+
+            Widget: # Spacer
+
+            MDFillRoundFlatButton:
+                text: "Submit"
+                pos_hint: {"center_x": 0.5}
+                size_hint_x: 0.8
+                on_press: root.enter_className(); root.enter_classID(); root.enter_classWeb(); root.save_data(); root.print_assignments()
                 on_release: root.manager.current = "main"
