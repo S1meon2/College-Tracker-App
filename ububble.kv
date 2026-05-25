@@ -1,10 +1,33 @@
-ScreenManager:
-    MainScreen:
-    SettingsScreen:
-    ClassAddScreen:
-    SignInScreen:
-    WebsiteDataScreen:
-    ClassEditScreen:
+MDFloatLayout:
+    ScreenManager:
+        id: screen_manager
+        MainScreen:
+        SettingsScreen:
+        ClassAddScreen:
+        SignInScreen:
+        WebsiteDataScreen:
+        ClassEditScreen:
+
+    # This floats above the ScreenManager
+    TopNotification:
+        id: global_notif
+
+# --- Define the Notification Visuals ---
+<TopNotification>:
+    size_hint: 0.85, None
+    height: "50dp"
+    # Change 'y' to 'top: 1.2' to prevent coordinate conflicts
+    pos_hint: {"center_x": 0.5, "top": 1.2}
+    elevation: 3
+    radius: [12]
+    md_bg_color: 0.15, 0.15, 0.15, 1 # Dark gray background
+
+    MDLabel:
+        text: root.message_text
+        theme_text_color: "Custom"
+        text_color: root.message_color
+        halign: "center"
+        bold: True
 
 <MainScreen>:
     name: "main"
@@ -104,6 +127,7 @@ ScreenManager:
                     text: "Manual"
                     pos_hint: {"center_y": 0.5}
                     size_hint_x: 0.5
+                    on_press:
 
 <SettingsScreen>:
     name: "settings"
@@ -382,6 +406,22 @@ ScreenManager:
                 size_hint_y: None
                 height: self.texture_size[1]
                 padding_y: "10dp"
+
+            MDLabel:
+                text: "  Select class to replace"
+                font_style: "H5"
+                pos_hint: {"center_x": 0.8}
+
+
+
+
+            MDRaisedButton:
+                id: class_dropdown_btn
+                text: "Select a Class"
+                pos_hint: {"center_x": 0.5}
+                size_hint_x: 0.4
+                # This calls the function we are about to create in Python
+                on_release: root.open_menu()
 
             MDTextField:
                 id: class_name
