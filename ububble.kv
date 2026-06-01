@@ -172,21 +172,21 @@ MDFloatLayout:
                 text: "Connect Blackboard"
                 pos_hint: {"center_x": 0.5}
                 size_hint_x: 0.8
-                on_press: root.enter_blackboard()
+                on_press: root.choose_website("blackboard")
                 on_release: root.manager.current = "enter web data"
 
             MDRaisedButton:
                 text: "Connect Zybooks"
                 pos_hint: {"center_x": 0.5}
                 size_hint_x: 0.8
-                on_press: root.enter_zybooks()
+                on_press: root.choose_website("zybooks")
                 on_release: root.manager.current = "enter web data"
 
             MDRaisedButton:
                 text: "Connect Cengage"
                 pos_hint: {"center_x": 0.5}
                 size_hint_x: 0.8
-                on_press: root.enter_cengage()
+                on_press: root.choose_website("cengage")
                 on_release: root.manager.current = "enter web data"
 
             Widget: # Bottom Spacer inside card
@@ -260,7 +260,7 @@ MDFloatLayout:
                 text: "Submit"
                 pos_hint: {"center_x": 0.5}
                 size_hint_x: 0.8
-                on_press: root.save_input(); root.save_data()
+                on_press: root.save_input(); root.save_to_login()
                 on_release: root.manager.current = "main"
 
 
@@ -376,6 +376,7 @@ MDFloatLayout:
                 text: "Submit"
                 pos_hint: {"center_x": 0.5}
                 size_hint_x: 0.8
+                on_press: root.sign_in()
                 on_release: root.manager.current = "main"
 
 <ClassEditScreen>:

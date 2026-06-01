@@ -1,43 +1,85 @@
 import sqlite3
 from Assignment_WEB import scrape_cengage, scrape_zybooks, scrape_blackboard
 
-connection = sqlite3.connect('website_logins.db')
+connection = sqlite3.connect('logins.db')
 
-cursor = connection.cursor()
+control = connection.cursor()
 
-command1 = """CREATE TABLE IF NOT EXISTS
+def create_login_table():
+    connection = sqlite3.connect('logins.db')
 
-login(name TEXT PRIMARY KEY, username TEXT, password TEXT)
+    control = connection.cursor()
 
-"""
+    control.execute("""CREATE TABLE IF NOT EXISTS
+    
+        login (name TEXT, username TEXT, password TEXT, isSigned BLOB)
+    
+    """)
+
+def create_class_table():
+    connection = sqlite3.connect('classes.db')
+
+    control = connection.cursor()
+
+    control.execute("""CREATE TABLE IF NOT EXISTS
+
+        class (name TEXT, website TEXT, id TEXT)
+
+    """)
+
+def create_account_table():
+    connection = sqlite3.connect('accounts.db')
+
+    control = connection.cursor()
+
+    control.execute("""CREATE TABLE IF NOT EXISTS
+
+        account (username TEXT, pin TEXT, login TEXT, classes TEXT)
+
+    """)
 
 
 
-#cursor.execute(command1)
+def send_login(name, userName, userPass, isSignedIn):
+    data = (name, userName, userPass, isSignedIn)
 
-def send_info(name, userName, userPass):
+    if isSignedIn:
 
-    data = [
-        (name, userName, userPass),
-    ]
+        connection = sqlite3.connect("logins.db")
 
-    # Insert multiple rows efficiently
-    cursor.executemany("INSERT OR IGNORE INTO login (name, username, password) VALUES (?, ?, ?)", data)
-    connection.commit()
+        control = connection.cursor()
 
-    cursor.execute("SELECT * FROM login")
+        control.execute("INSERT OR IGNORE INTO login VALUES (?, ?, ?, ?)", data)
 
-    results = cursor.fetchall()
+        connection.commit()
+        connection.close()
 
-    #cursor.execute("DELETE * FROM login")
+        print( name + " has been connected!")
 
-    print(results)
+    else:
 
-def recieve_info():
-    connection = sqlite3.connect('website_logins.db')
-    cursor = connection.cursor()
-    cursor.execute("SELECT * FROM login")
-    logins = cursor.fetchall()
+        memConnection = sqlite3.connect(":memory:")
+
+        memControl = memConnection.cursor()
+
+        memControl.execute("""CREATE TABLE IF NOT EXISTS
+
+                login (name TEXT, username TEXT, password TEXT, isSigned BLOB)
+
+            """)
+
+        memControl.execute("INSERT OR IGNORE INTO login VALUES (?, ?, ?, ?)", data)
+
+        memConnection.commit()
+        memConnection.close()
+
+        print(name + " has been connected!")
+
+def recieve_login():
+    connection = sqlite3.connect('logins.db')
+    control = connection.cursor()
+    control.execute("SELECT * FROM login")
+    logins = control.fetchall()
 
     all_data = " "
     for login in logins:
@@ -53,4 +95,7 @@ def recieve_info():
 
     return all_data
 
-
+#control.execute("DROP TABLE login")
+#control.execute(" DELETE FROM login WHERE name = 'blackboard' ")
+connection.commit()
+connection.close()
