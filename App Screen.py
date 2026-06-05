@@ -1,5 +1,5 @@
 from G_Tools import get_tasks_service, sync_assignments_to_tasks
-from ububbleDB import send_login, recieve_login
+from ububbleDB import send_login, recieve_login, send_class
 from kivymd.app import MDApp
 from kivy.clock import Clock
 from kivy.animation import Animation
@@ -43,45 +43,31 @@ class SettingsScreen(Screen):
 
 class ClassAddScreen(Screen):
 
-    def enter_className(self):
-        MDApp.get_running_app().className = self.ids.class_name.text
-    def enter_classWeb(self):
-        MDApp.get_running_app().classWeb = self.ids.assignment_website.text
-    def enter_classID(self):
-        MDApp.get_running_app().classID = self.ids.class_identifier.text
-
-    def print_assignments(self):
-        if MDApp.get_running_app().classWeb == "cengage":
-            scrape_cengage(MDApp.get_running_app().cengageSN.name, MDApp.get_running_app().cengageSN.username, MDApp.get_running_app().cengageSN.password)
-        if MDApp.get_running_app().classWeb == "zybooks":
-            scrape_zybooks(MDApp.get_running_app().zybooksSN.name, MDApp.get_running_app().zybooksSN.username, MDApp.get_running_app().zybooksSN.password)
-        if MDApp.get_running_app().classWeb == "blackboard":
-            scrape_blackboard(MDApp.get_running_app().blackboardSN.name, MDApp.get_running_app().blackboardSN.username, MDApp.get_running_app().blackboardSN.password)
-
-
+    def save_to_class(self):
+        classname = self.ids.class_name.text
+        webname = self.ids.assignment_website.text
+        classid = self.ids.class_identifier.text
+        send_class(classname, webname, classid, MDApp.get_running_app().SignIn)
+        MDApp.get_running_app().show_notif(classname + " has been added and can now be scraped!", "success")
 
 class SignInScreen(Screen):
 
     def sign_in(self):
-        MDApp.get_running_app().isSignedIn = True
+        MDApp.get_running_app().SignIn = self.ids.username_field.text
 
 class WebsiteDataScreen(Screen):
-
-    def save_input(self):
-        MDApp.get_running_app().user_name = self.ids.username_field.text
-        MDApp.get_running_app().user_pass = self.ids.password_field.text
     def save_to_login(self):
         name = MDApp.get_running_app().websiteName
         userName = self.ids.username_field.text
         userPass = self.ids.password_field.text
         if MDApp.get_running_app().websiteName == "cengage":
-            send_login(name, userName, userPass, MDApp.get_running_app().isSignedIn)
+            send_login(name, userName, userPass, MDApp.get_running_app().SignIn)
             MDApp.get_running_app().show_notif("Cengage connected.","success")
         if MDApp.get_running_app().websiteName == "zybooks":
-            send_login(name, userName, userPass. MDApp.get_running_app().isSignedIn)
+            send_login(name, userName, userPass. MDApp.get_running_app().SignIn)
             MDApp.get_running_app().show_notif("Zybooks connected.","success")
         if MDApp.get_running_app().websiteName == "blackboard":
-            send_login(name, userName, userPass, MDApp.get_running_app().isSignedIn)
+            send_login(name, userName, userPass, MDApp.get_running_app().SignIn)
             MDApp.get_running_app().show_notif("Blackboard connected.","success")
 
 class ClassEditScreen(Screen):

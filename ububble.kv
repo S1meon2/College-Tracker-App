@@ -260,7 +260,7 @@ MDFloatLayout:
                 text: "Submit"
                 pos_hint: {"center_x": 0.5}
                 size_hint_x: 0.8
-                on_press: root.save_input(); root.save_to_login()
+                on_press: root.save_to_login()
                 on_release: root.manager.current = "main"
 
 
@@ -322,7 +322,7 @@ MDFloatLayout:
                 text: "+ ADD this class"
                 pos_hint: {"center_x": 0.5}
                 size_hint_x: 0.8
-                on_press: root.enter_className(); root.enter_classID(); root.enter_classWeb(); root.save_data(); root.print_assignments()
+                on_press: root.save_to_class()
                 on_release: root.manager.current = "main"
 
 <SignInScreen>:
