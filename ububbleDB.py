@@ -1,43 +1,84 @@
 import sqlite3
 from Assignment_WEB import scrape_cengage, scrape_zybooks, scrape_blackboard
 
-connection = sqlite3.connect('website_logins.db')
+def create_login_table():
+    connection = sqlite3.connect('logins.db')
 
-cursor = connection.cursor()
+    control = connection.cursor()
 
-command1 = """CREATE TABLE IF NOT EXISTS
+    control.execute("""CREATE TABLE IF NOT EXISTS
+    
+        login (name TEXT, username TEXT, password TEXT, isSigned BLOB)
+    
+    """)
 
-login(name TEXT PRIMARY KEY, username TEXT, password TEXT)
+def create_class_table():
+    connection = sqlite3.connect('classes.db')
 
-"""
+    control = connection.cursor()
 
+    control.execute("""CREATE TABLE IF NOT EXISTS
 
+        class (name TEXT, website TEXT, id TEXT)
 
-#cursor.execute(command1)
+    """)
 
-def send_info(name, userName, userPass):
+def create_account_table():
+    connection = sqlite3.connect('accounts.db')
 
-    data = [
-        (name, userName, userPass),
-    ]
+    control = connection.cursor()
 
-    # Insert multiple rows efficiently
-    cursor.executemany("INSERT OR IGNORE INTO login (name, username, password) VALUES (?, ?, ?)", data)
-    connection.commit()
+    control.execute("""CREATE TABLE IF NOT EXISTS
 
-    cursor.execute("SELECT * FROM login")
+        account (username TEXT, pin TEXT, login TEXT, classes TEXT)
 
-    results = cursor.fetchall()
+    """)
+def send_login(name, userName, userPass, isSigned):
+    data = (name, userName, userPass, isSigned)
 
-    #cursor.execute("DELETE * FROM login")
+    if isSigned != "":
 
-    print(results)
+        connection = sqlite3.connect("logins.db")
 
-def recieve_info():
-    connection = sqlite3.connect('website_logins.db')
-    cursor = connection.cursor()
-    cursor.execute("SELECT * FROM login")
-    logins = cursor.fetchall()
+        control = connection.cursor()
+
+        control.execute("""CREATE TABLE IF NOT EXISTS
+
+                        login (name TEXT, username TEXT, password TEXT, isSigned BLOB)
+
+                    """)
+
+        control.execute("INSERT OR IGNORE INTO login VALUES (?, ?, ?, ?)", data)
+
+        connection.commit()
+        connection.close()
+
+        print( name + " has been connected!")
+
+    else:
+
+        memConnection = sqlite3.connect(":memory:")
+
+        memControl = memConnection.cursor()
+
+        memControl.execute("""CREATE TABLE IF NOT EXISTS
+
+                login (name TEXT, username TEXT, password TEXT, isSigned BLOB)
+
+            """)
+
+        memControl.execute("INSERT OR IGNORE INTO login VALUES (?, ?, ?, ?)", data)
+
+        memConnection.commit()
+        memConnection.close()
+
+        print(name + " has been connected!")
+
+def recieve_login():
+    connection = sqlite3.connect('logins.db')
+    control = connection.cursor()
+    control.execute("SELECT * FROM login")
+    logins = control.fetchall()
 
     all_data = " "
     for login in logins:
@@ -53,4 +94,73 @@ def recieve_info():
 
     return all_data
 
+def scrape_test():
+    connection = sqlite3.connect('logins.db')
+    control = connection.cursor()
+    control.execute("SELECT * FROM login")
+    logins = control.fetchone()
 
+    data = ""
+
+    name = logins[0]
+    username = logins[1]
+    password = logins[2]
+
+    connection = sqlite3.connect('classes.db')
+    control = connection.cursor()
+    control.execute("SELECT * FROM class")
+    classItem = control.fetchone()
+    data = scrape_zybooks(name ,username, password, classItem[3])
+
+    return data
+
+
+def send_class(classname, webname, classid, assignmentpage, isSignedIn):
+    data = (classname, webname, classid, assignmentpage, isSignedIn)
+
+    if isSignedIn != "":
+
+        connection = sqlite3.connect("classes.db")
+
+        control = connection.cursor()
+
+        control.execute("""CREATE TABLE IF NOT EXISTS
+
+                        class (classname TEXT, webname TEXT, classid TEXT, assignmentpage TEXT, isSigned BLOB)
+
+                    """)
+
+        control.execute("INSERT OR IGNORE INTO class VALUES (?, ?, ?, ?, ?)", data)
+
+        connection.commit()
+        connection.close()
+
+        print(classname + " has been added and can now be scraped!")
+
+    else:
+
+        memConnection = sqlite3.connect(":memory:")
+
+        memControl = memConnection.cursor()
+
+        memControl.execute("""CREATE TABLE IF NOT EXISTS
+
+                        class (classname TEXT, webname TEXT, classid TEXT, isSigned BLOB)
+
+                    """)
+
+        memControl.execute("INSERT OR IGNORE INTO class VALUES (?, ?, ?, ?)", data)
+
+        memConnection.commit()
+        memConnection.close()
+
+        print(classname + " has been added and can now be scraped!")
+
+
+"""Manually delete Tables & Data"""
+connection = sqlite3.connect('logins.db')
+control = connection.cursor()
+#control.execute("DROP TABLE class")
+control.execute(" DELETE FROM login WHERE name = 'blackboard' ")
+connection.commit()
+connection.close()
