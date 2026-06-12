@@ -8,7 +8,7 @@ from selenium.webdriver.common.by import By
 
 web = ""
 
-def scrape_cengage(name, userName, userPass):
+def scrape_cengage(name, userName, userPass, assignmentPage):
     import time
 
     if name == "cengage":
@@ -37,7 +37,7 @@ def scrape_cengage(name, userName, userPass):
         #wait to load
         time.sleep(8)
         #   The Page we want
-        page_to_scrape.get("https://www.webassign.net/v4cgi/student.pl?action=home/index&course=1224094,1606151&UserPass=c6d721955278892924e0df4d78ff9009")
+        page_to_scrape.get(assignmentPage)
         #wait to load
         time.sleep(8)
 
@@ -65,7 +65,7 @@ def scrape_cengage(name, userName, userPass):
         #--print(page_to_scrape.page_source)--
         #-------------^
 
-def scrape_zybooks(name, userName, userPass):
+def scrape_zybooks(name, userName, userPass, assignmentPage):
     import time
 
     if name == "zybooks":
@@ -89,8 +89,7 @@ def scrape_zybooks(name, userName, userPass):
         # wait to load
         time.sleep(3)
         #   The Page we want
-        page_to_scrape.get(
-            "https://learn.zybooks.com/zybook/UACS101YessickSpring2026?selectedPanel=assignments-panel")
+        page_to_scrape.get("https://learn.zybooks.com/zybook/UACS101YessickSpring2026?selectedPanel=assignments-panel")
         # wait to load
         time.sleep(15)
 
@@ -118,7 +117,7 @@ def scrape_zybooks(name, userName, userPass):
         #--print(page_to_scrape.page_source)--
         # -------------^
 
-def scrape_blackboard(name, userName, userPass):
+def scrape_blackboard(name, userName, userPass, assignmentPage):
     import time
 
     if name == "blackboard":

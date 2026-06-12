@@ -22,7 +22,8 @@ def setup_gemini(api_key):
 
 
 # Configure your Gemini API Key here
-GENAI_API_KEY = "yourAPI"
+with open("api_key.txt", "r") as f:
+    GENAI_API_KEY = f.read().strip()
 genai.configure(api_key=GENAI_API_KEY)
 
 
@@ -208,5 +209,3 @@ def check_task_lists():
    else:
        for item in items:
            print(f"List Name: {item['title']} | List ID: {item['id']}")
-
-

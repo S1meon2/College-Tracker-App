@@ -1,5 +1,5 @@
 from G_Tools import get_tasks_service, sync_assignments_to_tasks
-from ububbleDB import send_login, recieve_login, send_class
+from ububbleDB import send_login, send_class, scrape_test
 from kivymd.app import MDApp
 from kivy.clock import Clock
 from kivy.animation import Animation
@@ -16,7 +16,7 @@ class MainScreen(Screen):
 
     def update(self):
         # 1. Run the scrapers and get the raw text
-        raw_text = recieve_login()
+        raw_text = scrape_test()
 
         # 2. Send that text to Gemini and then to Google Tasks
         if raw_text:
@@ -47,7 +47,8 @@ class ClassAddScreen(Screen):
         classname = self.ids.class_name.text
         webname = self.ids.assignment_website.text
         classid = self.ids.class_identifier.text
-        send_class(classname, webname, classid, MDApp.get_running_app().SignIn)
+        assignmentpage = self.ids.assignment_page_input.text
+        send_class(classname, webname, classid, assignmentpage, MDApp.get_running_app().isSignedIn)
         MDApp.get_running_app().show_notif(classname + " has been added and can now be scraped!", "success")
 
 class SignInScreen(Screen):
@@ -61,13 +62,13 @@ class WebsiteDataScreen(Screen):
         userName = self.ids.username_field.text
         userPass = self.ids.password_field.text
         if MDApp.get_running_app().websiteName == "cengage":
-            send_login(name, userName, userPass, MDApp.get_running_app().SignIn)
+            send_login(name, userName, userPass, MDApp.get_running_app().isSignedIn)
             MDApp.get_running_app().show_notif("Cengage connected.","success")
         if MDApp.get_running_app().websiteName == "zybooks":
-            send_login(name, userName, userPass. MDApp.get_running_app().SignIn)
+            send_login(name, userName, userPass, MDApp.get_running_app().isSignedIn)
             MDApp.get_running_app().show_notif("Zybooks connected.","success")
         if MDApp.get_running_app().websiteName == "blackboard":
-            send_login(name, userName, userPass, MDApp.get_running_app().SignIn)
+            send_login(name, userName, userPass, MDApp.get_running_app().isSignedIn)
             MDApp.get_running_app().show_notif("Blackboard connected.","success")
 
 class ClassEditScreen(Screen):
@@ -211,5 +212,6 @@ class UBubbleApp(MDApp):
 # Run
 if __name__ == "__main__":
     UBubbleApp().run()
+
 
 

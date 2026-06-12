@@ -94,9 +94,29 @@ def recieve_login():
 
     return all_data
 
+def scrape_test():
+    connection = sqlite3.connect('logins.db')
+    control = connection.cursor()
+    control.execute("SELECT * FROM login")
+    logins = control.fetchone()
 
-def send_class(classname, webname, classid, isSignedIn):
-    data = (classname, webname, classid, isSignedIn)
+    data = ""
+
+    name = logins[0]
+    username = logins[1]
+    password = logins[2]
+
+    connection = sqlite3.connect('classes.db')
+    control = connection.cursor()
+    control.execute("SELECT * FROM class")
+    classItem = control.fetchone()
+    data = scrape_zybooks(name ,username, password, classItem[3])
+
+    return data
+
+
+def send_class(classname, webname, classid, assignmentpage, isSignedIn):
+    data = (classname, webname, classid, assignmentpage, isSignedIn)
 
     if isSignedIn != "":
 
@@ -106,11 +126,11 @@ def send_class(classname, webname, classid, isSignedIn):
 
         control.execute("""CREATE TABLE IF NOT EXISTS
 
-                        class (classname TEXT, webname TEXT, classid TEXT, isSigned BLOB)
+                        class (classname TEXT, webname TEXT, classid TEXT, assignmentpage TEXT, isSigned BLOB)
 
                     """)
 
-        control.execute("INSERT OR IGNORE INTO class VALUES (?, ?, ?, ?)", data)
+        control.execute("INSERT OR IGNORE INTO class VALUES (?, ?, ?, ?, ?)", data)
 
         connection.commit()
         connection.close()
@@ -140,7 +160,7 @@ def send_class(classname, webname, classid, isSignedIn):
 """Manually delete Tables & Data"""
 connection = sqlite3.connect('logins.db')
 control = connection.cursor()
-#control.execute("DROP TABLE login")
-#control.execute(" DELETE FROM login WHERE name = 'blackboard' ")
+#control.execute("DROP TABLE class")
+control.execute(" DELETE FROM login WHERE name = 'blackboard' ")
 connection.commit()
 connection.close()

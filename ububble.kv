@@ -127,7 +127,7 @@ MDFloatLayout:
                     text: "Manual"
                     pos_hint: {"center_y": 0.5}
                     size_hint_x: 0.5
-                    on_press:
+                    on_press: root.update()
 
 <SettingsScreen>:
     name: "settings"
@@ -314,6 +314,14 @@ MDFloatLayout:
                 helper_text: "Example: MATH-126-009"
                 helper_text_mode: "on_focus"
                 icon_right: "tag"
+                mode: "rectangle"
+
+            MDTextField:
+                id: assignment_page_input
+                hint_text: "Enter the Assignment Page Link:"
+                helper_text: "Example: school.com/assignments"
+                helper_text_mode: "on_focus"
+                icon_right: "link"
                 mode: "rectangle"
 
             Widget: # Spacer
