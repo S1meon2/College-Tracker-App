@@ -1,4 +1,4 @@
-from G_Tools import get_tasks_service, sync_assignments_to_tasks
+from G_Tools import google_auth, sync_assignments_to_tasks
 from ububbleDB import send_login, send_class, scrape_test
 from kivymd.app import MDApp
 from kivy.clock import Clock
@@ -29,7 +29,7 @@ class SettingsScreen(Screen):
     def connect_google(self):
         # This will trigger the browser popup to create your token.json
         MDApp.get_running_app().show_notif("Opening browser for Google Authentication...","process")
-        get_tasks_service()
+        google_auth()
 
     # This helps us know which website the user is choosing to connect
     def choose_website(self, text):
