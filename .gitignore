@@ -211,3 +211,6 @@ token.json
 
 api.txt
 
+logins.db
+classes.db
+accounts.db

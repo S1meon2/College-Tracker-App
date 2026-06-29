@@ -1,48 +1,31 @@
-import datetime
-import os.path
-
-
-from google.auth.transport.requests import Request
-from google.oauth2.credentials import Credentials
-from google_auth_oauthlib.flow import InstalledAppFlow
-from googleapiclient.discovery import build
 import time
 import json
+import os.path
+import datetime
 import google.generativeai as genai
-
-
-def setup_gemini(api_key):
-   """Initializes the Gemini model."""
-   genai.configure(api_key=api_key)
-
-
-   # We use Flash because it's fast and perfect for parsing simple text like assignments
-   model = genai.GenerativeModel('gemini-2.5-flash')
-   return model
-
+from googleapiclient.discovery import build
+from google.oauth2.credentials import Credentials
+from google_auth_oauthlib.flow import InstalledAppFlow
+from google.auth.transport.requests import Request
+########################################################################################################################
 
 # Configure your Gemini API Key here
-GENAI_API_KEY = "yourAPI"
+with open("api_key.txt", "r") as f:
+    GENAI_API_KEY = f.read().strip()
+    f.close()
+
 genai.configure(api_key=GENAI_API_KEY)
 
-
-#############################################################################################
-
-
-
-
-
-
-def extract_assignments(raw_text):
-   """Uses Gemini to turn scraped text into a list of structured assignments."""
-
-
-   # We use Flash because it's the fastest and cheapest for this task
-   model = genai.GenerativeModel(
+# Model Configuration
+model = genai.GenerativeModel(
        model_name="gemini-2.5-flash",
        generation_config={"response_mime_type": "application/json"}
    )
 
+########################################################################################################################
+
+
+def extract_assignments(raw_text):
 
    prompt = f"""
        I am going to give you raw text scraped from a university website.
@@ -65,67 +48,54 @@ def extract_assignments(raw_text):
 
    # Because we requested JSON mode, we can safely load the text as a list
    assignments = json.loads(response.text)
+   print(assignments)
    return assignments
 
+########################################################################################################################
 
+def google_auth():
+    creds = None
+    Tasks = ['https://www.googleapis.com/auth/tasks']
 
+    # Have you signed in before? The token is what allows the software to get and edit data from the scope |google tasks|
+    if os.path.exists('token.json'):
+        creds = Credentials.from_authorized_user_file('token.json', Tasks)
 
-# This scope allows your app to read and write to the user's Google Tasks
-SCOPES = ['https://www.googleapis.com/auth/tasks']
+    # Expired access can get refreshed here
+    if not creds or not creds.valid:
+        if creds and creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+        else:
+            # For a completely new user, the program first checks that my app is registered |in google cloud| then throws a Google sign-in prompt for them.
+            flow = InstalledAppFlow.from_client_secrets_file('credentials.json', Tasks)
+            creds = flow.run_local_server(port=0)
 
+        # Save the credentials for the next run
+        with open('token.json', 'w') as token:
+            token.write(creds.to_json())
 
+    # Create the service object to interact with Google Tasks
+    return build('tasks', 'v1', credentials=creds)
 
-
-def get_tasks_service():
-   """Handles the OAuth 2.0 flow and returns a Google Tasks service object."""
-   creds = None
-
-
-   # The file token.json stores the user's access and refresh tokens.
-   # It is created automatically when the authorization flow completes for the first time.
-   if os.path.exists('token.json'):
-       creds = Credentials.from_authorized_user_file('token.json', SCOPES)
-
-
-   # If there are no (valid) credentials available, let the user log in.
-   if not creds or not creds.valid:
-       if creds and creds.expired and creds.refresh_token:
-           creds.refresh(Request())
-       else:
-           # This requires the 'credentials.json' file you downloaded from Google Cloud
-           flow = InstalledAppFlow.from_client_secrets_file(
-               'credentials.json', SCOPES)
-           creds = flow.run_local_server(port=0)
-
-
-       # Save the credentials for the next run
-       with open('token.json', 'w') as token:
-           token.write(creds.to_json())
-
-
-   # Create the service object to interact with Google Tasks
-   return build('tasks', 'v1', credentials=creds)
-
-
-
+########################################################################################################################
 
 def sync_assignments_to_tasks(raw_scraped_text):
    print("AI is processing assignments...")
    try:
        assignments = extract_assignments(raw_scraped_text)
-       service = get_tasks_service()
+       tasksconnect = google_auth()
 
 
-       # --- NEW STEP: Scan for duplicates across ALL lists ---
+       # ---Scan for duplicates across ALL lists ---
        print("Scanning current tasks to prevent duplicates...")
        existing_task_titles = []
 
 
        # Get all lists
-       tasklists_result = service.tasklists().list().execute()
+       tasklists_result = tasksconnect.tasklists().list().execute()
        for t_list in tasklists_result.get('items', []):
-           # Get all tasks in each list (showHidden=True includes completed tasks)
-           tasks_result = service.tasks().list(tasklist=t_list['id'], showHidden=True).execute()
+           # Get all tasks in each list (showHidden=True includes completed tasks, False doesn't)
+           tasks_result = tasksconnect.tasks().list(tasklist=t_list['id'], showHidden=False).execute()
            for t in tasks_result.get('items', []):
                # We save the title of every task you currently have
                existing_task_titles.append(t['title'])
@@ -166,7 +136,7 @@ def sync_assignments_to_tasks(raw_scraped_text):
 
 
                # Inserting into your specific "HW and Assignments" list
-               result = service.tasks().insert(tasklist='YTAwSUV3aEgzU0N5QUNOXw', body=task_body).execute()
+               result = tasksconnect.tasks().insert(tasklist= '@default', body=task_body).execute()
                print(f"Successfully added: {result.get('title')} | Task ID: {result.get('id')}")
 
 
@@ -190,11 +160,10 @@ def sync_assignments_to_tasks(raw_scraped_text):
 
 
 
-   ###DEBUG
 
-
+###DEBUG
 def check_task_lists():
-   service = get_tasks_service()
+   service = google_auth()
 
 
    # Ask Google for all your task lists
