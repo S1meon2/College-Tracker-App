@@ -171,3 +171,53 @@ def scrape_blackboard(name, userName, userPass, assignmentPage):
         # --print(page_to_scrape.page_source)--
         # -------------^
 
+########################################################################################################################
+
+def scrape_demo(userName, userPass, assignmentPage):
+
+    import time
+
+    #   Open Chrome
+    page_to_scrape = webdriver.Chrome()
+
+    #   Open Website
+    page_to_scrape.get("file:///C:/Users/indmi/Documents/Codex/2026-06-25/i/outputs/mock-edu-portal.html")
+
+    time.sleep(5)
+
+
+    #   Input Username
+    username = page_to_scrape.find_element(By.ID, "username")
+    username.send_keys(userName)
+    #   Input Password
+    password = page_to_scrape.find_element(By.ID, "password")
+    password.send_keys(userPass)
+    #   Sign in button
+    page_to_scrape.find_element(By.ID, "sign-in-button").click()
+    # wait to load
+    time.sleep(8)
+    #   The Page we want
+    #page_to_scrape.get("file:///C:/Users/indmi/Documents/Codex/2026-06-25/i/outputs/mock-edu-portal.html")
+    # wait to load
+    time.sleep(2)
+
+    # --------------------------------------------------------------------------------------
+
+    #   Pull the name of each assignment and thier corresponding times/dates
+    names = page_to_scrape.find_elements(By.CLASS_NAME, "assignment-title")
+    times = page_to_scrape.find_elements(By.CLASS_NAME, "due-date")
+
+    all = ""
+    #   Each is printed
+    print()
+    for name, time in zip(names, times):
+        print(name.text + " - " + time.text)
+        all += " " + name.text + " - " + time.text
+    print()
+
+    return all
+
+    #   End the webscraping
+    page_to_scrape.quit()
+
+#scrape_demo("username","password","file:///C:/Users/indmi/Documents/Codex/2026-06-25/i/outputs/mock-edu-portal.html")

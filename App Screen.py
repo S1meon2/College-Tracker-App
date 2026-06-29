@@ -1,9 +1,9 @@
 from G_Tools import google_auth, sync_assignments_to_tasks
-from ububbleDB import send_login, send_class, scrape_test
+from ububbleDB import send_login, send_class
 from kivymd.app import MDApp
 from kivy.clock import Clock
 from kivy.animation import Animation
-from Assignment_WEB import scrape_cengage, scrape_zybooks, scrape_blackboard
+from Assignment_WEB import scrape_cengage, scrape_zybooks, scrape_blackboard, scrape_demo
 from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.card import MDCard
 from kivy.properties import StringProperty, ColorProperty
@@ -16,7 +16,7 @@ class MainScreen(Screen):
 
     def update(self):
         # 1. Run the scrapers and get the raw text
-        raw_text = scrape_test()
+        raw_text = scrape_demo("username","password","file:///C:/Users/indmi/Documents/Codex/2026-06-25/i/outputs/mock-edu-portal.html")
 
         # 2. Send that text to Gemini and then to Google Tasks
         if raw_text:
