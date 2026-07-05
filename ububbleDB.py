@@ -1,5 +1,5 @@
 import sqlite3
-from Assignment_WEB import scrape_cengage, scrape_zybooks, scrape_blackboard
+from Assignment_WEB import scrape_cengage, scrape_zybooks, scrape_blackboard, scrape_demo
 
 def create_login_table():
     connection = sqlite3.connect('ububble.db')
@@ -77,23 +77,28 @@ def send_login(name, userName, userPass, isSigned):
 
         print(name + " has been connected!")
 
-def recieve_login():
-    connection = sqlite3.connect('logins.db')
+def recieve_scraped(name):
+    connection = sqlite3.connect('ububble.db')
     control = connection.cursor()
     control.execute("SELECT * FROM login")
     logins = control.fetchall()
 
-    all_data = " "
-    for login in logins:
+    all_data = ""
 
-        if login[0] == "cengage":
-            all_data += scrape_cengage(login[0], login[1], login[2])
+    if name == "All":
+        for login in logins:
 
-        if login[0] == "zybooks":
-           all_data += scrape_zybooks(login[0], login[1], login[2])
+            if login[0] == "cengage":
+                all_data += scrape_cengage(login[0], login[1], login[2])
 
-        if login[0] == "blackboard":
-            all_data += scrape_blackboard(login[0], login[1], login[2])
+            if login[0] == "zybooks":
+                all_data += scrape_zybooks(login[0], login[1], login[2])
+
+            if login[0] == "blackboard":
+                all_data += scrape_blackboard(login[0], login[1], login[2])
+
+            if login[0] == "demo":
+                all_data += scrape_demo(login[1], login[2], "file:///C:/Users/indmi/Documents/Codex/2026-06-25/i/outputs/mock-edu-portal.html")
 
     return all_data
 
@@ -161,9 +166,9 @@ def send_class(classname, webname, classid, assignmentpage, isSignedIn):
 
 
 """Manually delete Tables & Data"""
-connection = sqlite3.connect('logins.db')
+connection = sqlite3.connect('ububble.db')
 control = connection.cursor()
 #control.execute("DROP TABLE class")
-control.execute(" DELETE FROM login WHERE name = 'blackboard' ")
+#control.execute(" DELETE FROM login WHERE name = 'blackboard' ")
 connection.commit()
 connection.close()

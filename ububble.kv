@@ -483,7 +483,7 @@ MDFloatLayout:
         padding: dp(20)
         spacing: dp(20)
 
-        # 1. Main Header
+        # 1. Main Header and Home Button
         MDLabel:
             text: "Class to Tasks Screen"
             font_style: "H4"
@@ -492,6 +492,11 @@ MDFloatLayout:
             halign: "center"
             size_hint_y: None
             height: self.texture_size[1]
+
+        MDIconButton:
+            icon: "home"
+            pos_hint: {"top": 0.97, "right": 0.96}
+            on_release: root.manager.current = "main"
 
         # 2. Outer Layout for Sidebar and Main Content
         MDBoxLayout:
@@ -592,7 +597,7 @@ MDFloatLayout:
                         text: "Send to tasks"
                         theme_text_color: "Custom"
                         text_color: 1, 1, 1, 1
-                        line_color: 1, 1, 1, 1
+                        line_color: 1, 1, 1, 1.
                         font_style: "Subtitle1"
                         bold: True
                         pos_hint: {"center_y": .5}

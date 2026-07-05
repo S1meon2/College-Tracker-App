@@ -110,7 +110,7 @@ def sync_assignments_to_tasks(raw_scraped_text):
 
 
            # This is what the title will look like
-           formatted_title = f"{item['title']} (Due: {item['due_time']})"
+           formatted_title = f"{item['title']})"
 
 
            # Filter 1: Is it due today or in the future?
@@ -130,7 +130,7 @@ def sync_assignments_to_tasks(raw_scraped_text):
                # If it's not a duplicate, build and insert it
                task_body = {
                    'title': formatted_title,
-                   'notes': f"Exact Due Time: {item['due_time']}",
+                   'notes': f"Due {item['due_time']}",
                    'due': f"{item['due_date']}T00:00:00Z"
                }
 

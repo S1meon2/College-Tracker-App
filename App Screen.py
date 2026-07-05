@@ -1,5 +1,5 @@
 from G_Tools import google_auth, sync_assignments_to_tasks
-from ububbleDB import send_login, send_class
+from ububbleDB import send_login, send_class, recieve_scraped
 from kivymd.app import MDApp
 from kivy.clock import Clock
 from kivy.animation import Animation
@@ -48,7 +48,7 @@ class ClassAddScreen(Screen):
 class SignInScreen(Screen):
 
     def sign_in(self):
-        MDApp.get_running_app().SignIn = self.ids.username_field.text
+        MDApp.get_running_app().isSignedIn = self.ids.username_field.text
 
 class WebsiteDataScreen(Screen):
     def save_to_login(self):
@@ -138,7 +138,8 @@ class ClassesScreen(Screen):
 
     def get_assignments_to_tasks(self):
         # 1. Run the scrapers and get the raw text
-        raw_text = scrape_demo("username","password","file:///C:/Users/indmi/Documents/Codex/2026-06-25/i/outputs/mock-edu-portal.html")
+        print(self.ids.class_website.text)
+        raw_text = recieve_scraped(self.ids.class_website.text)
 
         # 2. Send that text to Gemini and then to Google Tasks
         if raw_text:
