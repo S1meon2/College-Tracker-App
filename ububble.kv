@@ -7,6 +7,8 @@ MDFloatLayout:
         SignInScreen:
         WebsiteDataScreen:
         ClassEditScreen:
+        ClassesScreen:
+
 
     # This floats above the ScreenManager
     TopNotification:
@@ -103,7 +105,7 @@ MDFloatLayout:
             padding: "16dp"
 
             MDLabel:
-                text: "Update"
+                text: "Get assignments"
                 font_style: "H5"
                 bold: True
                 halign: "center"
@@ -124,10 +126,10 @@ MDFloatLayout:
                     size_hint_x: 0.5
 
                 MDRaisedButton:
-                    text: "Manual"
+                    text: "Classes page"
                     pos_hint: {"center_y": 0.5}
                     size_hint_x: 0.5
-                    on_press: root.update()
+                    on_press: root.manager.current = "classes"
 
 <SettingsScreen>:
     name: "settings"
@@ -187,6 +189,13 @@ MDFloatLayout:
                 pos_hint: {"center_x": 0.5}
                 size_hint_x: 0.8
                 on_press: root.choose_website("cengage")
+                on_release: root.manager.current = "enter web data"
+
+            MDRaisedButton:
+                text: "Connect Demo"
+                pos_hint: {"center_x": 0.5}
+                size_hint_x: 0.8
+                on_press: root.choose_website("demo")
                 on_release: root.manager.current = "enter web data"
 
             Widget: # Bottom Spacer inside card
@@ -464,3 +473,157 @@ MDFloatLayout:
                 size_hint_x: 0.8
                 on_press: root.enter_className(); root.enter_classID(); root.enter_classWeb(); root.save_data(); root.print_assignments()
                 on_release: root.manager.current = "main"
+
+<ClassesScreen>:
+    name: "classes"
+    md_bg_color: 0.08, 0.08, 0.08, 1 # Dark gray/almost black background
+
+    MDBoxLayout:
+        orientation: 'vertical'
+        padding: dp(20)
+        spacing: dp(20)
+
+        # 1. Main Header
+        MDLabel:
+            text: "Class to Tasks Screen"
+            font_style: "H4"
+            theme_text_color: "Custom"
+            text_color: 0.1, 0.7, 0.2, 1 # Retro Green
+            halign: "center"
+            size_hint_y: None
+            height: self.texture_size[1]
+
+        # 2. Outer Layout for Sidebar and Main Content
+        MDBoxLayout:
+            orientation: 'horizontal'
+            spacing: dp(20)
+
+            # Sidebar (Left Side)
+            MDBoxLayout:
+                orientation: 'vertical'
+                spacing: dp(15)
+                size_hint_x: 0.3
+
+                # Cluster button
+                MDFillRoundFlatButton:
+                    text: "Cluster"
+                    size_hint_x: 1
+                    size_hint_y: 0.25
+                    font_style: "H5"
+                    bold: True
+                    on_release: root.update_panel("Cluster", "All")
+
+                # Sidebar Buttons
+                MDFillRoundFlatButton:
+                    text: "Science"
+                    size_hint_x: 1
+                    size_hint_y: 0.15
+                    md_bg_color: 0.3, 0.18, 0.0, 1 # Brownish
+                    text_color: 0.9, 0.5, 0.0, 1
+                    font_style: "H6"
+                    bold: True
+                    on_release: root.update_panel("Science-263", "Cengage")
+
+                MDFillRoundFlatButton:
+                    text: "Geology"
+                    size_hint_x: 1
+                    size_hint_y: 0.15
+                    md_bg_color: 0.3, 0.18, 0.0, 1
+                    text_color: 0.9, 0.5, 0.0, 1
+                    font_style: "H6"
+                    bold: True
+                    on_release: root.update_panel("Geology-101", "Zybooks")
+
+                MDFillRoundFlatButton:
+                    text: "Engineering"
+                    size_hint_x: 1
+                    size_hint_y: 0.15
+                    md_bg_color: 0.3, 0.18, 0.0, 1
+                    text_color: 0.9, 0.5, 0.0, 1
+                    font_style: "H6"
+                    bold: True
+                    on_release: root.update_panel("Engineering-101", "Blackboard")
+
+                MDFillRoundFlatButton:
+                    text: "MATH"
+                    size_hint_x: 1
+                    size_hint_y: 0.2
+                    md_bg_color: 0.08, 0.25, 0.35, 1 # Deep Blue
+                    text_color: 0.3, 0.7, 0.9, 1 # Light Blue
+                    font_style: "H4"
+                    bold: True
+                    on_release: root.update_panel("Math-105", "Blackboard")
+
+            # Main Content Panel (Right Side)
+            MDCard:
+                id: main_content_panel
+                orientation: 'vertical'
+                padding: dp(25)
+                spacing: dp(15)
+                md_bg_color: 0.05, 0.05, 0.05, 1
+                line_color: 0.4, 0.6, 0.8, 1 # Blueish border
+                radius: [20, 20, 20, 20]
+                size_hint_x: 0.7
+
+                # Panel Header (Title & Button)
+                MDBoxLayout:
+                    orientation: 'horizontal'
+                    size_hint_y: None
+                    height: dp(60)
+
+                    MDBoxLayout:
+                        orientation: 'vertical'
+                        MDLabel:
+                            id: class_title
+                            text: "Math-105"
+                            font_style: "H4"
+                            bold: True
+                            theme_text_color: "Custom"
+                            text_color: 0.9, 0.9, 0.9, 1
+                        MDLabel:
+                            id: class_website
+                            text: "Blackboard"
+                            font_style: "H5"
+                            bold: True
+                            theme_text_color: "Custom"
+                            text_color: 0.6, 0.5, 1.0, 1 # Purple
+
+                    MDRoundFlatButton:
+                        text: "Send to tasks"
+                        theme_text_color: "Custom"
+                        text_color: 1, 1, 1, 1
+                        line_color: 1, 1, 1, 1
+                        font_style: "Subtitle1"
+                        bold: True
+                        pos_hint: {"center_y": .5}
+                        on_press: root.get_assignments_to_tasks()
+
+                # Divider Line
+                MDSeparator:
+                    color: 1, 1, 1, 1
+                    height: dp(2)
+
+                # Blackboard Content Area
+                MDRelativeLayout:
+
+                    MDCard:
+                        md_bg_color: 0.3, 0.18, 0.35, 1 # Main purple background
+                        line_color: 0.6, 0.5, 1.0, 1 # Light purple outer border
+                        radius: [15, 15, 15, 15]
+                        padding: dp(15)
+
+                        # Placeholder for drawing/text
+                        MDLabel:
+                            text: " "
+                            theme_text_color: "Custom"
+                            text_color: 1, 1, 1, 1
+
+                    # Floating Copy Button
+                    MDFillRoundFlatButton:
+                        text: "Copy"
+                        md_bg_color: 0.1, 0.3, 0.5, 1 # Blue button
+                        text_color: 0.5, 0.7, 1.0, 1
+                        line_color: 0.3, 0.6, 0.9, 1
+                        bold: True
+                        font_style: "H6"
+                        pos_hint: {"top": 0.92, "right": 0.96}

@@ -2,7 +2,7 @@ import sqlite3
 from Assignment_WEB import scrape_cengage, scrape_zybooks, scrape_blackboard
 
 def create_login_table():
-    connection = sqlite3.connect('logins.db')
+    connection = sqlite3.connect('ububble.db')
 
     control = connection.cursor()
 
@@ -13,7 +13,7 @@ def create_login_table():
     """)
 
 def create_class_table():
-    connection = sqlite3.connect('classes.db')
+    connection = sqlite3.connect('ububble.db')
 
     control = connection.cursor()
 
@@ -24,7 +24,7 @@ def create_class_table():
     """)
 
 def create_account_table():
-    connection = sqlite3.connect('accounts.db')
+    connection = sqlite3.connect('ububble.db')
 
     control = connection.cursor()
 
@@ -33,18 +33,21 @@ def create_account_table():
         account (username TEXT, pin TEXT, login TEXT, classes TEXT)
 
     """)
+
+########################################################################################################################
+
 def send_login(name, userName, userPass, isSigned):
     data = (name, userName, userPass, isSigned)
 
-    if isSigned != "":
+    if isSigned != "user":
 
-        connection = sqlite3.connect("logins.db")
+        connection = sqlite3.connect("ububble.db")
 
         control = connection.cursor()
 
         control.execute("""CREATE TABLE IF NOT EXISTS
 
-                        login (name TEXT, username TEXT, password TEXT, isSigned BLOB)
+                        login (name TEXT, username TEXT, password TEXT, isSigned TEXT)
 
                     """)
 

@@ -13,16 +13,8 @@ from kivy.uix.screenmanager import Screen
 
 # Here are the screen's python logic and functions
 class MainScreen(Screen):
+    pass
 
-    def update(self):
-        # 1. Run the scrapers and get the raw text
-        raw_text = scrape_demo("username","password","file:///C:/Users/indmi/Documents/Codex/2026-06-25/i/outputs/mock-edu-portal.html")
-
-        # 2. Send that text to Gemini and then to Google Tasks
-        if raw_text:
-            sync_assignments_to_tasks(raw_text)
-        else:
-            print("No assignments found to sync.")
 
 class SettingsScreen(Screen):
 
@@ -39,6 +31,8 @@ class SettingsScreen(Screen):
             MDApp.get_running_app().websiteName = "zybooks"
         if text == "cengage":
             MDApp.get_running_app().websiteName = "cengage"
+        if text == "demo":
+            MDApp.get_running_app().websiteName = "demo"
 
 
 class ClassAddScreen(Screen):
@@ -70,6 +64,10 @@ class WebsiteDataScreen(Screen):
         if MDApp.get_running_app().websiteName == "blackboard":
             send_login(name, userName, userPass, MDApp.get_running_app().isSignedIn)
             MDApp.get_running_app().show_notif("Blackboard connected.","success")
+        if MDApp.get_running_app().websiteName == "demo":
+            send_login(name, userName, userPass, MDApp.get_running_app().isSignedIn)
+            MDApp.get_running_app().show_notif("Demo site connected.","success")
+
 
 class ClassEditScreen(Screen):
     menu = None  # Define the menu variable
@@ -133,6 +131,20 @@ class ClassEditScreen(Screen):
             scrape_blackboard(MDApp.get_running_app().blackboardSN.name, MDApp.get_running_app().blackboardSN.username,
                               MDApp.get_running_app().blackboardSN.password)
 
+class ClassesScreen(Screen):
+    def update_panel(self, class_name, website_name):
+        self.ids.class_title.text = class_name
+        self.ids.class_website.text = website_name
+
+    def get_assignments_to_tasks(self):
+        # 1. Run the scrapers and get the raw text
+        raw_text = scrape_demo("username","password","file:///C:/Users/indmi/Documents/Codex/2026-06-25/i/outputs/mock-edu-portal.html")
+
+        # 2. Send that text to Gemini and then to Google Tasks
+        if raw_text:
+            sync_assignments_to_tasks(raw_text)
+        else:
+            print("No assignments found to sync.")
 
 class TopNotification(MDCard):
     message_text = StringProperty("")
@@ -192,7 +204,7 @@ class TopNotification(MDCard):
 class UBubbleApp(MDApp):
     #Initialize everything
     classID = className = classWeb = websiteName = user_name = user_pass = zybooksSN = cengageSN = blackboardSN = ""
-    isSignedIn = False
+    isSignedIn = "user"
 
     def show_notif(self, text, notif_type="process"):
         # This references the notifcation UI in the KV file
@@ -212,6 +224,3 @@ class UBubbleApp(MDApp):
 # Run
 if __name__ == "__main__":
     UBubbleApp().run()
-
-
-
