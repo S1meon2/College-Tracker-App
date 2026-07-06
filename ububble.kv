@@ -619,6 +619,7 @@ MDFloatLayout:
 
                         # Placeholder for drawing/text
                         MDLabel:
+                            id: copy_box
                             text: " "
                             theme_text_color: "Custom"
                             text_color: 1, 1, 1, 1
@@ -632,3 +633,4 @@ MDFloatLayout:
                         bold: True
                         font_style: "H6"
                         pos_hint: {"top": 0.92, "right": 0.96}
+                        on_press: root.copy_to_clipboard()

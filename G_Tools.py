@@ -33,7 +33,7 @@ def extract_assignments(raw_text):
 
 
        Return a JSON list of objects. Each object must have:
-       - 'title': The name of the assignment
+       - 'title': The name of the assignment (e.g., Math: sequences assignment)
        - 'due_date': The date in YYYY-MM-DD format. Today's date is {datetime.date.today()}.
        - 'due_time': The specific time it is due in 12-hour HH:MM am or pm format (e.g., '2:30 pm' or '11:59 pm'). If no time is mentioned, default to '11:59 pm'.
 
@@ -110,7 +110,7 @@ def sync_assignments_to_tasks(raw_scraped_text):
 
 
            # This is what the title will look like
-           formatted_title = f"{item['title']})"
+           formatted_title = f"{item['title']}"
 
 
            # Filter 1: Is it due today or in the future?

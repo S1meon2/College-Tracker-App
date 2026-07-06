@@ -1,3 +1,4 @@
+import pyperclip
 from G_Tools import google_auth, sync_assignments_to_tasks
 from ububbleDB import send_login, send_class, recieve_scraped
 from kivymd.app import MDApp
@@ -136,16 +137,28 @@ class ClassesScreen(Screen):
         self.ids.class_title.text = class_name
         self.ids.class_website.text = website_name
 
+    def text_to_copy(self, text):
+        self.ids.copy_box.text = text
+
+    def copy_to_clipboard(self):
+        # Get text from the input box
+        pyperclip.copy(raw_text)  # Copy to system clipboard
+        MDApp.get_running_app().show_notif("Text copied to clipboard!", "success")
+
     def get_assignments_to_tasks(self):
         # 1. Run the scrapers and get the raw text
         print(self.ids.class_website.text)
-        raw_text = recieve_scraped(self.ids.class_website.text)
+        global raw_text
+        raw_text = recieve_scraped(self.ids.class_website.text, MDApp.get_running_app().isSignedIn)
 
         # 2. Send that text to Gemini and then to Google Tasks
         if raw_text:
             sync_assignments_to_tasks(raw_text)
+            self.text_to_copy(raw_text)
         else:
             print("No assignments found to sync.")
+
+
 
 class TopNotification(MDCard):
     message_text = StringProperty("")

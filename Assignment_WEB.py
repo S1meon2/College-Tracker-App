@@ -204,15 +204,16 @@ def scrape_demo(userName, userPass, assignmentPage):
     # --------------------------------------------------------------------------------------
 
     #   Pull the name of each assignment and thier corresponding times/dates
+    courseName = page_to_scrape.find_elements(By.CLASS_NAME, "course-name")
     names = page_to_scrape.find_elements(By.CLASS_NAME, "assignment-title")
     times = page_to_scrape.find_elements(By.CLASS_NAME, "due-date")
 
     all = ""
     #   Each is printed
     print()
-    for name, time in zip(names, times):
-        print(name.text + " - " + time.text)
-        all += " " + name.text + " - " + time.text
+    for courseName, name, time in zip(courseName,names,times):
+        print(courseName.text + ": " + name.text + " - " + time.text)
+        all += courseName.text + ": " + name.text + " - " + time.text
     print()
 
     return all
