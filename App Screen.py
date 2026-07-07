@@ -1,6 +1,6 @@
 import pyperclip
 from G_Tools import google_auth, sync_assignments_to_tasks
-from ububbleDB import send_login, send_class, recieve_scraped
+from ububbleDB import send_login, send_class, recieve_scraped, send_account
 from kivymd.app import MDApp
 from kivy.clock import Clock
 from kivy.animation import Animation
@@ -14,7 +14,12 @@ from kivy.uix.screenmanager import Screen
 
 # Here are the screen's python logic and functions
 class MainScreen(Screen):
-    pass
+    def account_in(self):
+        self.ids.sign_in_button.text = MDApp.get_running_app().isSignedIn
+
+    def account_out(self):
+        self.ids.sign_in_button.text = "Sign in"
+
 
 
 class SettingsScreen(Screen):
@@ -47,9 +52,22 @@ class ClassAddScreen(Screen):
         MDApp.get_running_app().show_notif(classname + " has been added and can now be scraped!", "success")
 
 class SignInScreen(Screen):
-
+    
     def sign_in(self):
-        MDApp.get_running_app().isSignedIn = self.ids.username_field.text
+        MDApp.get_running_app().isSignedIn = send_account(self.ids.username_field.text,self.ids.pin_field.text)
+        self.ids.sign_in_card.opacity = 0
+        self.ids.sign_in_card.disabled = True
+        self.ids.sign_out_button.opacity = 1
+        self.ids.sign_out_button.disabled = False
+        self.manager.get_screen('main').account_in()
+        
+    def sign_out(self):
+        MDApp.get_running_app().isSignedIn = "user"
+        self.ids.sign_in_card.opacity = 1
+        self.ids.sign_in_card.disabled = False
+        self.ids.sign_out_button.opacity = 0
+        self.ids.sign_out_button.disabled = True
+        self.manager.get_screen('main').account_out()
 
 class WebsiteDataScreen(Screen):
     def save_to_login(self):
@@ -146,6 +164,8 @@ class ClassesScreen(Screen):
         MDApp.get_running_app().show_notif("Text copied to clipboard!", "success")
 
     def get_assignments_to_tasks(self):
+        MDApp.get_running_app().show_notif("Getting assignments...", "process")
+        print("Getting assignments...")
         # 1. Run the scrapers and get the raw text
         print(self.ids.class_website.text)
         global raw_text
@@ -155,8 +175,11 @@ class ClassesScreen(Screen):
         if raw_text:
             sync_assignments_to_tasks(raw_text)
             self.text_to_copy(raw_text)
+            MDApp.get_running_app().show_notif("assignments sent and available to copy","success")
+
         else:
-            print("No assignments found to sync.")
+            MDApp.get_running_app().show_notif("No assignments found to sync. Maybe sign in or connect a site.", "error")
+            print("No assignments found to sync. Maybe sign in or connect a site.")
 
 
 

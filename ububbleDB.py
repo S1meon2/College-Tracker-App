@@ -1,5 +1,6 @@
 import sqlite3
 from Assignment_WEB import scrape_cengage, scrape_zybooks, scrape_blackboard, scrape_demo
+from kivymd.app import MDApp
 
 # Global variable to hold the in-memory database connection
 mem_connection = None
@@ -19,7 +20,11 @@ def get_mem_connection():
         """)
         # Create class table for in-memory use
         control.execute("""CREATE TABLE IF NOT EXISTS
-            class (classname TEXT, webname TEXT, classid TEXT, assignmentpage TEXT, isSigned BLOB)
+            class (classname TEXT, webname TEXT, classid TEXT, assignmentpage TEXT, isSigned TEXT)
+        """)
+        # Create account table for in-memory use
+        control.execute("""CREATE TABLE IF NOT EXISTS
+            account (username TEXT, pin INTEGER)
         """)
     return mem_connection
 
@@ -31,9 +36,12 @@ def create_login_table():
 
     control.execute("""CREATE TABLE IF NOT EXISTS
     
-        login (name TEXT, username TEXT, password TEXT, isSigned BLOB)
+        login (name TEXT, username TEXT, password TEXT, isSigned TEXT)
     
     """)
+
+    connection.commit()
+    connection.close()
 
 def create_class_table():
     connection = sqlite3.connect('ububble.db')
@@ -46,6 +54,9 @@ def create_class_table():
 
     """)
 
+    connection.commit()
+    connection.close()
+
 def create_account_table():
     connection = sqlite3.connect('ububble.db')
 
@@ -53,9 +64,12 @@ def create_account_table():
 
     control.execute("""CREATE TABLE IF NOT EXISTS
 
-        account (username TEXT, pin TEXT, login TEXT, classes TEXT)
+        account (username TEXT, pin INTEGER)
 
     """)
+
+    connection.commit()
+    connection.close()
 
 ########################################################################################################################
 
@@ -68,28 +82,25 @@ def send_login(name, userName, userPass, isSigned):
 
         control = connection.cursor()
 
-        control.execute("""CREATE TABLE IF NOT EXISTS
-
-                        login (name TEXT, username TEXT, password TEXT, isSigned TEXT)
-
-                    """)
+        create_login_table()
 
         control.execute("INSERT OR IGNORE INTO login VALUES (?, ?, ?, ?)", data)
 
         connection.commit()
         connection.close()
 
-        print( name + " has been connected!")
+        MDApp.get_running_app().show_notif(name + " site has been connected!", "success")
+        print( name + "site has been connected!")
 
     else:
-        print("in memory to send")
         memConnection = get_mem_connection()
         memControl = memConnection.cursor()
         memControl.execute("INSERT OR IGNORE INTO login VALUES (?, ?, ?, ?)", data)
         memConnection.commit()
         # Do not close the connection, as it's shared.
 
-        print(name + " has been connected! (in memory)")
+        MDApp.get_running_app().show_notif(name + " site has been connected!", "success")
+        print(name + " site has been connected! (in memory)")
 
 def recieve_scraped(name, isSigned):
     if isSigned != "user":
@@ -115,7 +126,7 @@ def recieve_scraped(name, isSigned):
                 if login[0] == "demo" and login[3] == isSigned:
                     all_data += scrape_demo(login[1], login[2], "file:///C:/Users/indmi/Documents/Codex/2026-06-25/i/outputs/mock-edu-portal.html")
     else:
-        print("In memory to recieve")
+        print("Working in memory...")
         connection = get_mem_connection()
         memControl = connection.cursor()
         memControl.execute("SELECT * FROM login")
@@ -176,6 +187,39 @@ def send_class(classname, webname, classid, assignmentpage, isSignedIn):
 
         print(classname + " has been added and can now be scraped!")
 
+def send_account(username, pin):
+    data = (username,pin)
+    connection = sqlite3.connect('ububble.db')
+    control = connection.cursor()
+    create_account_table()
+
+    # Query to check if the specific account already exists
+    control.execute("SELECT * FROM account WHERE username = ? AND pin = ?", data)
+    existing_account = control.fetchone()
+
+    if existing_account:
+        print("Signing you back in...")
+        MDApp.get_running_app().show_notif("Signing you back in...", "success")
+        connection.close()
+        return retrieve_account(username, pin)
+    else:
+        control.execute("INSERT OR IGNORE INTO account VALUES (?,?)", data)
+        print("Creating your account...")
+        MDApp.get_running_app().show_notif("Creating your account...", "success")
+        connection.commit()
+        connection.close()
+        return username
+
+def retrieve_account(_username,_pin):
+    connection = sqlite3.connect('ububble.db')
+    control = connection.cursor()
+    control.execute("SELECT * FROM account WHERE username = ? AND pin = ?", (_username, _pin))
+    sign = control.fetchall()
+    connection.close()
+
+    if sign:
+        return sign[0][0]
+    return None
 
 """Manually delete Tables & Data"""
 connection = sqlite3.connect('ububble.db')

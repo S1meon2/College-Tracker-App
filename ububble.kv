@@ -37,6 +37,7 @@ MDFloatLayout:
 
         # --- Top Navigation ---
         MDRaisedButton:
+            id: sign_in_button
             text: "Sign in"
             elevation: 2
             pos_hint: {"top": 0.96, "x": 0.04}
@@ -353,6 +354,7 @@ MDFloatLayout:
 
         # --- Form Card ---
         MDCard:
+            id: sign_in_card
             orientation: "vertical"
             size_hint: 0.85, 0.65
             pos_hint: {"center_x": 0.5, "center_y": 0.5}
@@ -395,6 +397,15 @@ MDFloatLayout:
                 size_hint_x: 0.8
                 on_press: root.sign_in()
                 on_release: root.manager.current = "main"
+
+        MDFillRoundFlatButton:
+            id: sign_out_button
+            text: "Log Out"
+            pos_hint: {"center_x": 0.5, "center_y": 0.5}
+            size_hint: 0.6, 0.1
+            opacity: 0
+            disabled: True
+            on_release: root.sign_out()
 
 <ClassEditScreen>:
     name: "edit class"
