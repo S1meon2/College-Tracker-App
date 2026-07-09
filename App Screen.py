@@ -1,6 +1,6 @@
 import pyperclip
 from G_Tools import google_auth, sync_assignments_to_tasks
-from ububbleDB import send_login, send_class, recieve_scraped, send_account
+from ububbleDB import send_login, send_class, recieve_scraped, send_account, get_classes, delete_class
 from kivymd.app import MDApp
 from kivy.clock import Clock
 from kivy.animation import Animation
@@ -9,6 +9,7 @@ from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.card import MDCard
 from kivy.properties import StringProperty, ColorProperty
 from kivy.uix.screenmanager import Screen
+from kivymd.uix.button import MDFillRoundFlatButton
 
 
 
@@ -151,6 +152,18 @@ class ClassEditScreen(Screen):
                               MDApp.get_running_app().blackboardSN.password)
 
 class ClassesScreen(Screen):
+    def populate_classes(self):
+        self.ids.class_button_container.clear_widgets()
+        classes = get_classes(MDApp.get_running_app().isSignedIn)
+        for class_info in classes:
+            btn = MDFillRoundFlatButton(
+                text=class_info[0],
+                on_release=lambda x, class_name=class_info[0], web_name=class_info[1]: self.update_panel(class_name, web_name),
+                size_hint=(1, None),
+                height="48dp"
+            )
+            self.ids.class_button_container.add_widget(btn)
+
     def update_panel(self, class_name, website_name):
         self.ids.class_title.text = class_name
         self.ids.class_website.text = website_name

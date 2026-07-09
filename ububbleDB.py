@@ -156,9 +156,9 @@ def recieve_scraped(name, isSigned):
 def send_class(classname, webname, classid, assignmentpage, isSignedIn):
     data = (classname, webname, classid, assignmentpage, isSignedIn)
 
-    if isSignedIn != "":
+    if isSignedIn != "user":
 
-        connection = sqlite3.connect("classes.db")
+        connection = sqlite3.connect("ububble.db")
 
         control = connection.cursor()
 
@@ -186,6 +186,34 @@ def send_class(classname, webname, classid, assignmentpage, isSignedIn):
         # Do not close the connection.
 
         print(classname + " has been added and can now be scraped!")
+
+def get_classes(isSignedIn):
+    if isSignedIn != "user":
+        connection = sqlite3.connect('ububble.db')
+        control = connection.cursor()
+        control.execute("SELECT classname, webname FROM class WHERE isSigned=?", (isSignedIn,))
+        classes = control.fetchall()
+        connection.close()
+        return classes
+    else:
+        memConnection = get_mem_connection()
+        memControl = memConnection.cursor()
+        memControl.execute("SELECT classname, webname FROM class WHERE isSigned=?", (isSignedIn,))
+        classes = memControl.fetchall()
+        return classes
+
+def delete_class(classname, isSignedIn):
+    if isSignedIn != "user":
+        connection = sqlite3.connect('ububble.db')
+        control = connection.cursor()
+        control.execute("DELETE FROM class WHERE classname=? AND isSigned=?", (classname, isSignedIn))
+        connection.commit()
+        connection.close()
+    else:
+        memConnection = get_mem_connection()
+        memControl = memConnection.cursor()
+        memControl.execute("DELETE FROM class WHERE classname=? AND isSigned=?", (classname, isSignedIn))
+        memConnection.commit()
 
 def send_account(username, pin):
     data = (username,pin)
