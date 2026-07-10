@@ -125,6 +125,7 @@ MDFloatLayout:
                     text: "Auto"
                     pos_hint: {"center_y": 0.5}
                     size_hint_x: 0.5
+                    on_press: root.manager.get_screen('settings').get_gemini_key()
 
                 MDRaisedButton:
                     text: "Classes page"
@@ -135,24 +136,22 @@ MDFloatLayout:
 <SettingsScreen>:
     name: "settings"
     MDFloatLayout:
-
         MDLabel:
             text: "Settings"
             font_style: "H4"
             bold: True
             halign: "center"
-            pos_hint: {"top": 0.90}
+            pos_hint: {"top": 0.95}
 
         MDIconButton:
             icon: "home"
             pos_hint: {"top": 0.97, "right": 0.96}
             on_release: root.manager.current = "main"
 
-        # --- Main Settings Card ---
         MDCard:
             orientation: "vertical"
-            size_hint: 0.85, 0.65
-            pos_hint: {"center_x": 0.5, "center_y": 0.48}
+            size_hint: 0.85, 0.8
+            pos_hint: {"center_x": 0.5, "center_y": 0.45}
             elevation: 2
             radius: [16]
             padding: "24dp"
@@ -161,7 +160,7 @@ MDFloatLayout:
             MDFillRoundFlatIconButton:
                 icon: "google"
                 text: "Connect Google"
-                md_bg_color: 0.8, 0.1, 0.1, 1  # Professional Red
+                md_bg_color: 0.8, 0.1, 0.1, 1
                 font_size: "18sp"
                 pos_hint: {"center_x": 0.5}
                 size_hint_x: 0.9
@@ -199,25 +198,36 @@ MDFloatLayout:
                 on_press: root.choose_website("demo")
                 on_release: root.manager.current = "enter web data"
 
-            Widget: # Bottom Spacer inside card
-
-        # --- Bottom System Update Bar ---
-        MDBoxLayout:
-            orientation: "horizontal"
-            size_hint: 0.85, None
-            height: "48dp"
-            pos_hint: {"center_x": 0.5, "y": 0.05}
-
             MDLabel:
-                text: "Auto-Update: ON"
-                theme_text_color: "Hint"
-                halign: "left"
+                text: "Gemini API Setup"
+                font_style: "H6"
+                halign: "center"
+                size_hint_y: None
+                height: self.texture_size[1]
 
-            MDIconButton:
-                icon: "refresh"
-                on_press: root.update()
+            MDBoxLayout:
+                orientation: "horizontal"
+                size_hint_y: None
+                height: "48dp"
+                spacing: "10dp"
+                pos_hint: {"center_x": 0.5}
 
+                MDRaisedButton:
+                    text: "Get Key"
+                    on_release: root.get_gemini_key()
+                    size_hint_x: 0.3
 
+                MDTextField:
+                    id: api_key_field
+                    hint_text: "Paste API Key"
+                    mode: "rectangle"
+                    password: True
+                    size_hint_x: 0.4
+
+                MDFillRoundFlatButton:
+                    text: "Submit"
+                    on_release: root.save_api_key()
+                    size_hint_x: 0.3
 
 <WebsiteDataScreen>:
     name: "enter web data"
@@ -364,7 +374,7 @@ MDFloatLayout:
             spacing: "20dp"
 
             MDLabel:
-                text: "Create Account"
+                text: "Create Account or Log Back In"
                 font_style: "H4"
                 bold: True
                 halign: "center"
@@ -449,7 +459,6 @@ MDFloatLayout:
                 text: "Select a Class"
                 pos_hint: {"center_x": 0.5}
                 size_hint_x: 0.4
-                # This calls the function we are about to create in Python
                 on_release: root.open_menu()
 
             MDTextField:
@@ -469,8 +478,8 @@ MDFloatLayout:
                 mode: "rectangle"
 
             MDTextField:
-                id: class_identifier
-                hint_text: "Enter Class Identifier:"
+                id: assignment_page
+                hint_text: "Enter Class Page Link:"
                 helper_text: "Example: MATH-126-009"
                 helper_text_mode: "on_focus"
                 icon_right: "tag"
@@ -482,7 +491,7 @@ MDFloatLayout:
                 text: "Submit"
                 pos_hint: {"center_x": 0.5}
                 size_hint_x: 0.8
-                on_press: root.enter_className(); root.enter_classID(); root.enter_classWeb(); root.save_data(); root.print_assignments()
+                on_press:  root.edit()
                 on_release: root.manager.current = "main"
 
 <ClassesScreen>:

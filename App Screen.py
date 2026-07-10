@@ -1,6 +1,7 @@
+import webbrowser
 import pyperclip
 from G_Tools import google_auth, sync_assignments_to_tasks
-from ububbleDB import send_login, send_class, recieve_scraped, send_account, get_classes, delete_class
+from ububbleDB import send_login, send_class, recieve_scraped, send_account, get_classes, delete_class, edit_class
 from kivymd.app import MDApp
 from kivy.clock import Clock
 from kivy.animation import Animation
@@ -8,8 +9,9 @@ from Assignment_WEB import scrape_cengage, scrape_zybooks, scrape_blackboard, sc
 from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.card import MDCard
 from kivy.properties import StringProperty, ColorProperty
-from kivy.uix.screenmanager import Screen
 from kivymd.uix.button import MDFillRoundFlatButton
+from kivy.uix.screenmanager import Screen
+
 
 
 
@@ -23,12 +25,29 @@ class MainScreen(Screen):
 
 
 
+
 class SettingsScreen(Screen):
 
     def connect_google(self):
         # This will trigger the browser popup to create your token.json
         MDApp.get_running_app().show_notif("Opening browser for Google Authentication...","process")
         google_auth()
+
+    def get_gemini_key(self):
+        # Opens the user's browser directly to the API key generation page
+        webbrowser.open("https://aistudio.google.com/app/apikey")
+        MDApp.get_running_app().show_notif("Opening browser to get Gemini API Key...", "process")
+
+    def save_api_key(self):
+        # Assuming you add a text field with id 'api_key_field' in your KV file
+        api_key = self.ids.api_key_field.text
+        if api_key.strip():
+            # Save this locally. You could use Kivy's storage, a simple .env file, or a secure keyring
+            with open("api_key.txt", "w") as f:
+                f.write(api_key.strip())
+            MDApp.get_running_app().show_notif("Gemini API Key saved successfully!", "success")
+        else:
+            MDApp.get_running_app().show_notif("Please enter a valid API key.", "error")
 
     # This helps us know which website the user is choosing to connect
     def choose_website(self, text):
@@ -95,61 +114,56 @@ class ClassEditScreen(Screen):
     # on_enter is a Kivy function that runs every time this screen is opened
     def on_enter(self):
         # We only want to build the menu if it hasn't been built yet
-        if not self.menu:
-            # Right now, these are static. Later, you'll pull these names from ububbleDB.py
-            class_names = ["Math", "Computer Science", "English", "Engineering"]
 
-            # Build the list of menu items
-            menu_items = [
-                {
-                    "text": name,
-                    "viewclass": "OneLineListItem",
-                    # When clicked, pass the name to the set_item function
-                    "on_release": lambda x=name: self.set_item(x),
-                } for name in class_names
-            ]
+        # Right now, these are static. Later, you'll pull these names from ububbleDB.py
+        class_names = get_classes(MDApp.get_running_app().isSignedIn)
+        print(get_classes(MDApp.get_running_app().isSignedIn))
 
-            # Initialize the dropdown menu
-            self.menu = MDDropdownMenu(
-                caller=self.ids.class_dropdown_btn,  # Connects to the button ID in your KV file
-                items=menu_items,
-                width_mult=4,
-            )
+        # Build the list of menu items
+        menu_items = [
+            {
+                "text": name[0],
+                "viewclass": "OneLineListItem",
+                # When clicked, pass the name to the set_item function
+                "on_release": lambda x=name[0], y=name[1], z=name[2]: self.set_item(x,y,z),
+            } for name in class_names
+        ]
+
+        # Initialize the dropdown menu
+        self.menu = MDDropdownMenu(
+            caller=self.ids.class_dropdown_btn,  # Connects to the button ID in your KV file
+            items=menu_items,
+            width_mult=4,
+        )
 
     def open_menu(self):
         # Open the menu when the button is pressed
         if self.menu:
             self.menu.open()
 
-    def set_item(self, selected_class):
+
+
+    def set_item(self, classname, classweb, classpage):
+
+
         # Change the button text to show the chosen class
-        self.ids.class_dropdown_btn.text = f"Selected: {selected_class}"
+        self.ids.class_dropdown_btn.text = f"Selected: {classname}"
 
 
         self.menu.dismiss()
 
         #  Autofill the text field
-        self.ids.class_name.text = selected_class
+        self.ids.class_name.text = classname
+        self.ids.assignment_website.text = classweb
+        self.ids.assignment_page.text = classpage
 
-    def enter_className(self):
-        MDApp.get_running_app().className = self.ids.class_name.text
 
-    def enter_classWeb(self):
-        MDApp.get_running_app().classWeb = self.ids.assignment_website.text
+        global oldname
+        oldname = classname
 
-    def enter_classID(self):
-        MDApp.get_running_app().classID = self.ids.class_identifier.text
-
-    def print_assignments(self):
-        if MDApp.get_running_app().classWeb == "cengage":
-            scrape_cengage(MDApp.get_running_app().cengageSN.name, MDApp.get_running_app().cengageSN.username,
-                           MDApp.get_running_app().cengageSN.password)
-        if MDApp.get_running_app().classWeb == "zybooks":
-            scrape_zybooks(MDApp.get_running_app().zybooksSN.name, MDApp.get_running_app().zybooksSN.username,
-                           MDApp.get_running_app().zybooksSN.password)
-        if MDApp.get_running_app().classWeb == "blackboard":
-            scrape_blackboard(MDApp.get_running_app().blackboardSN.name, MDApp.get_running_app().blackboardSN.username,
-                              MDApp.get_running_app().blackboardSN.password)
+    def edit(self):
+        edit_class(MDApp.get_running_app().isSignedIn, self.ids.class_name.text, self.ids.assignment_website.text, self.ids.assignment_page.text, oldname)
+        MDApp.get_running_app().show_notif(self.ids.class_name.text + " has been edited!", "success")
 
 class ClassesScreen(Screen):
     def populate_classes(self):

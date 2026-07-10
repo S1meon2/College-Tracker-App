@@ -151,6 +151,22 @@ def recieve_scraped(name, isSigned):
     return all_data
 
 
+def get_page(dbSite, isSignedIn):
+    if isSignedIn != "user":
+        connection = sqlite3.connect('ububble.db')
+        control = connection.cursor()
+        control.execute("SELECT * FROM class WHERE webname=?", (dbSite,))
+        classItem = control.fetchall()
+        connection.close()
+        return classItem[0][3]
+    else:
+        memConnection = get_mem_connection()
+        memControl = memConnection.cursor()
+        memControl.execute("SELECT * FROM class WHERE webname=?", (dbSite,))
+        classItem = memControl.fetchall()
+        return classItem[0][3]
+
+
 
 
 def send_class(classname, webname, classid, assignmentpage, isSignedIn):
@@ -191,16 +207,29 @@ def get_classes(isSignedIn):
     if isSignedIn != "user":
         connection = sqlite3.connect('ububble.db')
         control = connection.cursor()
-        control.execute("SELECT classname, webname FROM class WHERE isSigned=?", (isSignedIn,))
+        control.execute("SELECT classname, webname, assignmentpage FROM class WHERE isSigned=?", (isSignedIn,))
         classes = control.fetchall()
         connection.close()
         return classes
     else:
         memConnection = get_mem_connection()
         memControl = memConnection.cursor()
-        memControl.execute("SELECT classname, webname FROM class WHERE isSigned=?", (isSignedIn,))
+        memControl.execute("SELECT classname, webname, assignmentpage FROM class WHERE isSigned=?", (isSignedIn,))
         classes = memControl.fetchall()
         return classes
+
+def edit_class(isSignedIn,newname, newweb, newpage, oldname):
+    if isSignedIn != "user":
+        connection = sqlite3.connect('ububble.db')
+        control = connection.cursor()
+        control.execute(("UPDATE class SET classname = ?, webname = ?, assignmentpage = ? WHERE classname = ?"), (newname, newweb, newpage, oldname))
+        connection.commit()
+        connection.close()
+    else:
+        memConnection = get_mem_connection()
+        memControl = memConnection.cursor()
+        memControl.execute(("UPDATE class SET classname = ?, webname = ?, assignmentpage = ? WHERE classname = ?"), (newname, newweb, newpage, oldname))
+        memConnection.commit()
 
 def delete_class(classname, isSignedIn):
     if isSignedIn != "user":

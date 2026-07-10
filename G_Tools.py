@@ -136,7 +136,7 @@ def sync_assignments_to_tasks(raw_scraped_text):
 
 
                # Inserting into your specific "HW and Assignments" list
-               result = tasksconnect.tasks().insert(tasklist= '@default', body=task_body).execute()
+               result = tasksconnect.tasks().insert(tasklist= 'YTAwSUV3aEgzU0N5QUNOXw', body=task_body).execute()
                print(f"Successfully added: {result.get('title')} | Task ID: {result.get('id')}")
 
 
