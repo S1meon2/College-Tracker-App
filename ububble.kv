@@ -34,6 +34,7 @@ MDFloatLayout:
 <MainScreen>:
     name: "main"
     MDFloatLayout:
+        md_bg_color: 0.1, 0.1, 0.1, 1
 
         # --- Top Navigation ---
         MDRaisedButton:
@@ -42,20 +43,28 @@ MDFloatLayout:
             elevation: 2
             pos_hint: {"top": 0.96, "x": 0.04}
             on_release: root.manager.current = "sign in"
+            font_name: "Comic"
+            md_bg_color: 0.3, 0.2, 0.4, 1
+            text_color: 1, 1, 1, 1
 
         MDIconButton:
             icon: "cog"
             pos_hint: {"top": 0.97, "right": 0.96}
             on_release: root.manager.current = "settings"
+            icon_size: "48sp"
+            theme_text_color: "Custom"
+            text_color: 0.8, 0.6, 1, 1
 
         # --- Header ---
         MDLabel:
-            text: "U-bubble"
-            font_style: "H3"
+            text: "U-Bubble"
+            font_style: "H2"
             bold: True
             halign: "center"
             pos_hint: {"center_y": 0.88}
-            theme_text_color: "Primary"
+            theme_text_color: "Custom"
+            text_color: 0.8, 0.6, 1, 1
+            font_name: "data/fonts/Roboto-BoldItalic.ttf"
 
         # --- Classes Card ---
         MDCard:
@@ -63,16 +72,20 @@ MDFloatLayout:
             size_hint: 0.85, 0.25
             pos_hint: {"center_x": 0.5, "center_y": 0.65}
             elevation: 2
-            radius: [16]
+            radius: [24]
             padding: "16dp"
+            md_bg_color: 0.2, 0.2, 0.2, 1
 
             MDLabel:
                 text: "Classes"
-                font_style: "H5"
+                font_style: "H4"
                 bold: True
                 halign: "center"
                 size_hint_y: None
                 height: self.texture_size[1]
+                font_name: "RobotoLight"
+                theme_text_color: "Custom"
+                text_color: 0.9, 0.9, 0.9, 1
 
             Widget: # Spacer
 
@@ -88,6 +101,8 @@ MDFloatLayout:
                     pos_hint: {"center_y": 0.5}
                     size_hint_x: 0.5
                     on_release: root.manager.current = "edit class"
+                    font_name: "RobotoMedium"
+                    md_bg_color: 0.4, 0.3, 0.5, 1
 
                 MDFillRoundFlatIconButton:
                     text: "Add"
@@ -95,6 +110,8 @@ MDFloatLayout:
                     pos_hint: {"center_y": 0.5}
                     size_hint_x: 0.5
                     on_release: root.manager.current = "add a class"
+                    font_name: "RobotoMedium"
+                    md_bg_color: 0.4, 0.3, 0.5, 1
 
         # --- Updates Card ---
         MDCard:
@@ -102,16 +119,20 @@ MDFloatLayout:
             size_hint: 0.85, 0.25
             pos_hint: {"center_x": 0.5, "center_y": 0.35}
             elevation: 2
-            radius: [16]
+            radius: [24]
             padding: "16dp"
+            md_bg_color: 0.2, 0.2, 0.2, 1
 
             MDLabel:
                 text: "Get assignments"
-                font_style: "H5"
+                font_style: "H4"
                 bold: True
                 halign: "center"
                 size_hint_y: None
                 height: self.texture_size[1]
+                font_name: "RobotoLight"
+                theme_text_color: "Custom"
+                text_color: 0.9, 0.9, 0.9, 1
 
             Widget: # Spacer
 
@@ -122,40 +143,53 @@ MDFloatLayout:
                 size_hint_x: 0.8
 
                 MDRaisedButton:
-                    text: "Auto"
+                    text: "Auto (disabled)"
                     pos_hint: {"center_y": 0.5}
                     size_hint_x: 0.5
-                    on_press: root.manager.get_screen('settings').get_gemini_key()
+                    disabled: True
+                    font_name: "RobotoMedium"
 
-                MDRaisedButton:
+                MDFillRoundFlatIconButton:
                     text: "Classes page"
+                    icon: "view-list"  # Added icon
                     pos_hint: {"center_y": 0.5}
                     size_hint_x: 0.5
                     on_press: root.manager.current = "classes"
+                    font_name: "RobotoMedium"
+                    md_bg_color: 0.4, 0.3, 0.5, 1
 
 <SettingsScreen>:
     name: "settings"
     MDFloatLayout:
+        md_bg_color: 0.1, 0.1, 0.1, 1 # Consistent background
+
         MDLabel:
             text: "Settings"
             font_style: "H4"
             bold: True
             halign: "center"
             pos_hint: {"top": 0.95}
+            theme_text_color: "Custom"
+            text_color: 0.8, 0.6, 1, 1 # Purple header
+            font_name: "Roboto"
 
         MDIconButton:
             icon: "home"
             pos_hint: {"top": 0.97, "right": 0.96}
             on_release: root.manager.current = "main"
+            icon_size: "48sp"
+            theme_text_color: "Custom"
+            text_color: 0.8, 0.6, 1, 1
 
         MDCard:
             orientation: "vertical"
             size_hint: 0.85, 0.8
             pos_hint: {"center_x": 0.5, "center_y": 0.45}
             elevation: 2
-            radius: [16]
+            radius: [24] # Rounded corners
             padding: "24dp"
             spacing: "20dp"
+            md_bg_color: 0.2, 0.2, 0.2, 1 # Darker card background
 
             MDFillRoundFlatIconButton:
                 icon: "google"
@@ -165,10 +199,12 @@ MDFloatLayout:
                 pos_hint: {"center_x": 0.5}
                 size_hint_x: 0.9
                 on_press: root.connect_google()
+                font_name: "Roboto"
 
             MDSeparator:
                 size_hint_x: 0.6
                 pos_hint: {"center_x": 0.5}
+                color: 0.4, 0.3, 0.5, 1 # Purple separator
 
             MDRaisedButton:
                 text: "Connect Blackboard"
@@ -176,6 +212,8 @@ MDFloatLayout:
                 size_hint_x: 0.8
                 on_press: root.choose_website("blackboard")
                 on_release: root.manager.current = "enter web data"
+                font_name: "Roboto"
+                md_bg_color: 0.4, 0.3, 0.5, 1
 
             MDRaisedButton:
                 text: "Connect Zybooks"
@@ -183,6 +221,8 @@ MDFloatLayout:
                 size_hint_x: 0.8
                 on_press: root.choose_website("zybooks")
                 on_release: root.manager.current = "enter web data"
+                font_name: "Roboto"
+                md_bg_color: 0.4, 0.3, 0.5, 1
 
             MDRaisedButton:
                 text: "Connect Cengage"
@@ -190,6 +230,8 @@ MDFloatLayout:
                 size_hint_x: 0.8
                 on_press: root.choose_website("cengage")
                 on_release: root.manager.current = "enter web data"
+                font_name: "Roboto"
+                md_bg_color: 0.4, 0.3, 0.5, 1
 
             MDRaisedButton:
                 text: "Connect Demo"
@@ -197,6 +239,8 @@ MDFloatLayout:
                 size_hint_x: 0.8
                 on_press: root.choose_website("demo")
                 on_release: root.manager.current = "enter web data"
+                font_name: "Roboto"
+                md_bg_color: 0.4, 0.3, 0.5, 1
 
             MDLabel:
                 text: "Gemini API Setup"
@@ -204,6 +248,9 @@ MDFloatLayout:
                 halign: "center"
                 size_hint_y: None
                 height: self.texture_size[1]
+                theme_text_color: "Custom"
+                text_color: 0.9, 0.9, 0.9, 1
+                font_name: "Roboto"
 
             MDBoxLayout:
                 orientation: "horizontal"
@@ -216,6 +263,8 @@ MDFloatLayout:
                     text: "Get Key"
                     on_release: root.get_gemini_key()
                     size_hint_x: 0.3
+                    font_name: "Roboto"
+                    md_bg_color: 0.4, 0.3, 0.5, 1
 
                 MDTextField:
                     id: api_key_field
@@ -223,11 +272,18 @@ MDFloatLayout:
                     mode: "rectangle"
                     password: True
                     size_hint_x: 0.4
+                    font_name: "Roboto"
+                    line_color_normal: 0.4, 0.3, 0.5, 1
+                    line_color_focus: 0.8, 0.6, 1, 1
+                    text_color_normal: 0.9, 0.9, 0.9, 1
+                    hint_text_color: 0.6, 0.6, 0.6, 1
 
                 MDFillRoundFlatButton:
                     text: "Submit"
                     on_release: root.save_api_key()
                     size_hint_x: 0.3
+                    font_name: "Roboto"
+                    md_bg_color: 0.4, 0.3, 0.5, 1
 
 <WebsiteDataScreen>:
     name: "enter web data"
@@ -260,7 +316,7 @@ MDFloatLayout:
             MDTextField:
                 id: username_field
                 hint_text: "Enter email or username:"
-                helper_text: "Example: Simeon@gmail.com"
+                helper_text: "Example: Simeon"
                 helper_text_mode: "on_focus"
                 icon_right: "account"
                 mode: "rectangle"
@@ -356,11 +412,15 @@ MDFloatLayout:
 <SignInScreen>:
     name: "sign in"
     MDFloatLayout:
+        md_bg_color: 0.1, 0.1, 0.1, 1 # Consistent background
 
         MDIconButton:
             icon: "home"
             pos_hint: {"top": 0.97, "right": 0.96}
             on_release: root.manager.current = "main"
+            icon_size: "48sp"
+            theme_text_color: "Custom"
+            text_color: 0.8, 0.6, 1, 1
 
         # --- Form Card ---
         MDCard:
@@ -369,9 +429,10 @@ MDFloatLayout:
             size_hint: 0.85, 0.65
             pos_hint: {"center_x": 0.5, "center_y": 0.5}
             elevation: 2
-            radius: [16]
+            radius: [24] # Rounded corners
             padding: "24dp"
             spacing: "20dp"
+            md_bg_color: 0.2, 0.2, 0.2, 1 # Darker card background
 
             MDLabel:
                 text: "Create Account or Log Back In"
@@ -381,6 +442,9 @@ MDFloatLayout:
                 size_hint_y: None
                 height: self.texture_size[1]
                 padding_y: "15dp"
+                theme_text_color: "Custom"
+                text_color: 0.9, 0.9, 0.9, 1
+                font_name: "Comic"
 
             MDTextField:
                 id: username_field
@@ -389,6 +453,11 @@ MDFloatLayout:
                 helper_text_mode: "on_focus"
                 icon_right: "account"
                 mode: "rectangle"
+                font_name: "Roboto"
+                line_color_normal: 0.4, 0.3, 0.5, 1
+                line_color_focus: 0.9, 0.9, 1, 1
+                text_color_normal: 0.9, 0.9, 0.9, 1
+                hint_text_color: 0.6, 0.6, 0.6, 1
 
             MDTextField:
                 id: pin_field
@@ -398,6 +467,12 @@ MDFloatLayout:
                 icon_right: "key-variant"
                 password: True
                 mode: "rectangle"
+                font_name: "Roboto"
+                line_color_normal: 0.4, 0.3, 0.5, 1
+                line_color_focus: 0.9, 0.9, 1, 1
+                text_color_normal: 0.9, 0.9, 0.9, 1
+                hint_text_color: 0.6, 0.6, 0.6, 1
+
 
             Widget: # Spacer
 
@@ -407,6 +482,8 @@ MDFloatLayout:
                 size_hint_x: 0.8
                 on_press: root.sign_in()
                 on_release: root.manager.current = "main"
+                font_name: "Roboto"
+                md_bg_color: 0.4, 0.3, 0.5, 1
 
         MDFillRoundFlatButton:
             id: sign_out_button
@@ -416,6 +493,8 @@ MDFloatLayout:
             opacity: 0
             disabled: True
             on_release: root.sign_out()
+            font_name: "Comic"
+            md_bg_color: 0.8, 0.1, 0.1, 1 # Red for logout
 
 <ClassEditScreen>:
     name: "edit class"

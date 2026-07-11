@@ -1,5 +1,6 @@
 import webbrowser
 import pyperclip
+from kivy.core.window import Window
 from G_Tools import google_auth, sync_assignments_to_tasks
 from ububbleDB import send_login, send_class, recieve_scraped, send_account, get_classes, delete_class, edit_class
 from kivymd.app import MDApp
@@ -18,11 +19,14 @@ from kivy.uix.screenmanager import Screen
 # Here are the screen's python logic and functions
 class MainScreen(Screen):
     def account_in(self):
-        self.ids.sign_in_button.text = MDApp.get_running_app().isSignedIn
+        self.ids.sign_in_button.text = f"Welcome {MDApp.get_running_app().isSignedIn}!"
+        self.ids.sign_in_button.md_bg_color = [0.67, 0.6, 0.66, 1]  # Green color
+        self.ids.sign_in_button.text_color = [1, 1, 1, 1] # White text
 
     def account_out(self):
         self.ids.sign_in_button.text = "Sign in"
-
+        self.ids.sign_in_button.md_bg_color = [0.3, 0.2, 0.4, 1]  # Original purple color
+        self.ids.sign_in_button.text_color = [1, 1, 1, 1] # White text
 
 
 
