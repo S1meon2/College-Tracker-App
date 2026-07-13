@@ -343,21 +343,26 @@ MDFloatLayout:
 <ClassAddScreen>:
     name: "add a class"
     MDFloatLayout:
+        md_bg_color: 0.1, 0.1, 0.1, 1 # Consistent background
 
         MDIconButton:
             icon: "home"
             pos_hint: {"top": 0.97, "right": 0.96}
             on_release: root.manager.current = "main"
+            icon_size: "48sp" # Added
+            theme_text_color: "Custom" # Added
+            text_color: 0.8, 0.6, 1, 1 # Added
 
         # --- Form Card ---
         MDCard:
             orientation: "vertical"
-            size_hint: 0.85, 0.75
+            size_hint: 0.85, 0.65 # Adjusted size_hint
             pos_hint: {"center_x": 0.5, "center_y": 0.5}
             elevation: 2
-            radius: [16]
+            radius: [24] # Rounded corners
             padding: "24dp"
-            spacing: "15dp"
+            spacing: "20dp" # Adjusted spacing for better look
+            md_bg_color: 0.2, 0.2, 0.2, 1 # Darker card background
 
             MDLabel:
                 text: "New Class"
@@ -367,6 +372,9 @@ MDFloatLayout:
                 size_hint_y: None
                 height: self.texture_size[1]
                 padding_y: "10dp"
+                theme_text_color: "Custom" # Added
+                text_color: 0.8, 0.6, 1, 1 # Purple header
+                font_name: "data/fonts/Roboto-BoldItalic.ttf" # Added
 
             MDTextField:
                 id: class_name
@@ -375,6 +383,11 @@ MDFloatLayout:
                 helper_text_mode: "on_focus"
                 icon_right: "book-open-outline"
                 mode: "rectangle"
+                font_name: "Roboto" # Added
+                line_color_normal: 0.4, 0.3, 0.5, 1 # Added
+                line_color_focus: 0.9, 0.9, 1, 1 # Added
+                text_color_normal: 0.9, 0.9, 0.9, 1 # Added
+                hint_text_color: 0.6, 0.6, 0.6, 1 # Added
 
             MDTextField:
                 id: assignment_website
@@ -383,14 +396,11 @@ MDFloatLayout:
                 helper_text_mode: "on_focus"
                 icon_right: "web"
                 mode: "rectangle"
-
-            MDTextField:
-                id: class_identifier
-                hint_text: "Enter Class Identifier:"
-                helper_text: "Example: MATH-126-009"
-                helper_text_mode: "on_focus"
-                icon_right: "tag"
-                mode: "rectangle"
+                font_name: "Roboto" # Added
+                line_color_normal: 0.4, 0.3, 0.5, 1 # Added
+                line_color_focus: 0.9, 0.9, 1, 1 # Added
+                text_color_normal: 0.9, 0.9, 0.9, 1 # Added
+                hint_text_color: 0.6, 0.6, 0.6, 1 # Added
 
             MDTextField:
                 id: assignment_page_input
@@ -399,6 +409,11 @@ MDFloatLayout:
                 helper_text_mode: "on_focus"
                 icon_right: "link"
                 mode: "rectangle"
+                font_name: "Roboto" # Added
+                line_color_normal: 0.4, 0.3, 0.5, 1 # Added
+                line_color_focus: 0.9, 0.9, 1, 1 # Added
+                text_color_normal: 0.9, 0.9, 0.9, 1 # Added
+                hint_text_color: 0.6, 0.6, 0.6, 1 # Added
 
             Widget: # Spacer
 
@@ -407,7 +422,9 @@ MDFloatLayout:
                 pos_hint: {"center_x": 0.5}
                 size_hint_x: 0.8
                 on_press: root.save_to_class()
+                md_bg_color: 0.4, 0.3, 0.5, 1
                 on_release: root.manager.current = "main"
+                font_name: "RobotoMedium" # Added
 
 <SignInScreen>:
     name: "sign in"
@@ -500,11 +517,15 @@ MDFloatLayout:
     name: "edit class"
 
     MDFloatLayout:
+        md_bg_color: 0.1, 0.1, 0.1, 1 # Consistent background
 
         MDIconButton:
             icon: "home"
             pos_hint: {"top": 0.97, "right": 0.96}
             on_release: root.manager.current = "main"
+            icon_size: "48sp"
+            theme_text_color: "Custom"
+            text_color: 0.8, 0.6, 1, 1
 
         # --- Form Card ---
         MDCard:
@@ -512,9 +533,10 @@ MDFloatLayout:
             size_hint: 0.85, 0.75
             pos_hint: {"center_x": 0.5, "center_y": 0.5}
             elevation: 2
-            radius: [16]
+            radius: [24] # Rounded corners
             padding: "24dp"
             spacing: "15dp"
+            md_bg_color: 0.2, 0.2, 0.2, 1 # Darker card background
 
             MDLabel:
                 text: "Edit Class"
@@ -524,13 +546,19 @@ MDFloatLayout:
                 size_hint_y: None
                 height: self.texture_size[1]
                 padding_y: "10dp"
+                theme_text_color: "Custom" # Added
+                text_color: 0.8, 0.6, 1, 1 # Purple header
+                font_name: "data/fonts/Roboto-BoldItalic.ttf" # Added
+
 
             MDLabel:
-                text: "  Select class to replace"
+                text: "Select class to replace"
                 font_style: "H5"
-                pos_hint: {"center_x": 0.8}
-
-
+                halign: "center" # Centered on x-axis
+                pos_hint: {"center_x": 0.5} # Centered on x-axis
+                theme_text_color: "Custom"
+                text_color: 0.9, 0.9, 0.9, 1
+                font_name: "RobotoLight"
 
 
             MDRaisedButton:
@@ -539,6 +567,8 @@ MDFloatLayout:
                 pos_hint: {"center_x": 0.5}
                 size_hint_x: 0.4
                 on_release: root.open_menu()
+                font_name: "RobotoMedium"
+                md_bg_color: 0.4, 0.3, 0.5, 1
 
             MDTextField:
                 id: class_name
@@ -547,6 +577,11 @@ MDFloatLayout:
                 helper_text_mode: "on_focus"
                 icon_right: "book-open-outline"
                 mode: "rectangle"
+                font_name: "RobotoMedium"
+                line_color_normal: 0.4, 0.3, 0.5, 1
+                line_color_focus: 0.9, 0.9, 1, 1
+                text_color_normal: 0.9, 0.9, 0.9, 1
+                hint_text_color: 0.6, 0.6, 0.6, 1
 
             MDTextField:
                 id: assignment_website
@@ -555,6 +590,11 @@ MDFloatLayout:
                 helper_text_mode: "on_focus"
                 icon_right: "web"
                 mode: "rectangle"
+                font_name: "RobotoMedium"
+                line_color_normal: 0.4, 0.3, 0.5, 1
+                line_color_focus: 0.9, 0.9, 1, 1
+                text_color_normal: 0.9, 0.9, 0.9, 1
+                hint_text_color: 0.6, 0.6, 0.6, 1
 
             MDTextField:
                 id: assignment_page
@@ -563,15 +603,36 @@ MDFloatLayout:
                 helper_text_mode: "on_focus"
                 icon_right: "tag"
                 mode: "rectangle"
+                font_name: "RobotoMedium"
+                line_color_normal: 0.4, 0.3, 0.5, 1
+                line_color_focus: 0.9, 0.9, 1, 1
+                text_color_normal: 0.9, 0.9, 0.9, 1
+                hint_text_color: 0.6, 0.6, 0.6, 1
 
             Widget: # Spacer
 
-            MDFillRoundFlatButton:
-                text: "Submit"
+            MDBoxLayout:
+                orientation: "horizontal"
+                spacing: "20dp"
                 pos_hint: {"center_x": 0.5}
                 size_hint_x: 0.8
-                on_press:  root.edit()
-                on_release: root.manager.current = "main"
+
+                MDFillRoundFlatButton:
+                    text: "Delete Class"
+                    pos_hint: {"center_y": 0.5}
+                    size_hint_x: 0.5
+                    on_press: root.delete_class() # Assuming a delete_class method
+                    font_name: "RobotoMedium"
+                    md_bg_color: 0.8, 0.1, 0.1, 1 # Red for delete
+
+                MDFillRoundFlatButton:
+                    text: "Complete Edit"
+                    pos_hint: {"center_y": 0.5}
+                    size_hint_x: 0.5
+                    on_press: root.edit()
+                    on_release: root.manager.current = "main"
+                    font_name: "RobotoMedium"
+                    md_bg_color: 0.4, 0.3, 0.5, 1
 
 <ClassesScreen>:
     name: "classes"
@@ -588,16 +649,20 @@ MDFloatLayout:
             size_hint_y: None
             height: self.minimum_height
             MDLabel:
-                text: "Class to Tasks Screen"
+                text: "Send assignments to Tasks"
                 font_style: "H4"
                 theme_text_color: "Custom"
-                text_color: 0.1, 0.7, 0.2, 1
+                text_color: 0.8, 0.6, 1, 1
+                font_name: "data/fonts/Roboto-BoldItalic.ttf"
                 halign: "center"
                 size_hint_y: None
                 height: self.texture_size[1]
             MDIconButton:
                 icon: "home"
                 pos_hint: {"center_y": 0.5}
+                icon_size: "48sp"
+                theme_text_color: "Custom"
+                text_color: 0.8, 0.6, 1, 1
                 on_release: root.manager.current = "main"
 
         MDBoxLayout:
@@ -637,14 +702,14 @@ MDFloatLayout:
                         orientation: 'vertical'
                         MDLabel:
                             id: class_title
-                            text: "Math-105"
+                            text: "Class Title"
                             font_style: "H4"
                             bold: True
                             theme_text_color: "Custom"
                             text_color: 0.9, 0.9, 0.9, 1
                         MDLabel:
                             id: class_website
-                            text: "Blackboard"
+                            text: "Class Website"
                             font_style: "H5"
                             bold: True
                             theme_text_color: "Custom"
