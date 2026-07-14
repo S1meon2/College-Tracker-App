@@ -6,10 +6,8 @@ from kivymd.app import MDApp
 mem_connection = None
 
 def get_mem_connection():
-    """
-    Creates and returns a single in-memory database connection.
-    Initializes tables if the connection is new.
-    """
+    """   Creates and returns a single in-memory database connection.
+          Initializes tables if the connection is new.                                               """
     global mem_connection
     if mem_connection is None:
         mem_connection = sqlite3.connect(':memory:')
@@ -91,6 +89,7 @@ def send_login(name, userName, userPass, isSigned):
 
         MDApp.get_running_app().show_notif(name + " site has been connected!", "success")
         print( name + "site has been connected!")
+        return name
 
     else:
         memConnection = get_mem_connection()
@@ -101,7 +100,47 @@ def send_login(name, userName, userPass, isSigned):
 
         MDApp.get_running_app().show_notif(name + " site has been connected!", "success")
         print(name + " site has been connected! (in memory)")
+        return name
 
+def get_login(name,isSignedIn):
+    if isSignedIn != "user":
+        connection = sqlite3.connect('ububble.db')
+        control = connection.cursor()
+        control.execute("SELECT * FROM login WHERE isSigned=? AND name=?", (isSignedIn, name))
+        login = control.fetchall()
+        connection.close()
+        if login:
+            print(login[0][0])
+            return login[0][0]
+        else:
+            return ""
+    else:
+        memConnection = get_mem_connection()
+        memControl = memConnection.cursor()
+        memControl.execute("SELECT * FROM login WHERE isSigned=? AND name=?", (isSignedIn, name))
+        login = memControl.fetchall()
+        if login:
+            print(login[0][0])
+            return login[0][0]
+        else:
+            return ""
+
+def delete_login(name, isSignedIn):
+    if isSignedIn != "user":
+        connection = sqlite3.connect('ububble.db')
+        control = connection.cursor()
+        control.execute("DELETE FROM login WHERE name=? AND isSigned=?", (name, isSignedIn))
+        connection.commit()
+        connection.close()
+    else:
+        memConnection = get_mem_connection()
+        memControl = memConnection.cursor()
+        memControl.execute("DELETE FROM login WHERE name=? AND isSigned=?", (name, isSignedIn))
+        memConnection.commit()
+
+
+
+############################################################################################################
 def recieve_scraped(name, isSigned):
     if isSigned != "user":
         connection = sqlite3.connect('ububble.db')
@@ -109,22 +148,7 @@ def recieve_scraped(name, isSigned):
         control.execute("SELECT * FROM login")
         logins = control.fetchall()
 
-        all_data = ""
 
-        if name == "All":
-            for login in logins:
-
-                if login[0] == "cengage" and login[3] == isSigned:
-                    all_data += scrape_cengage(login[0], login[1], login[2])
-
-                if login[0] == "zybooks" and login[3] == isSigned:
-                    all_data += scrape_zybooks(login[0], login[1], login[2])
-
-                if login[0] == "blackboard" and login[3] == isSigned:
-                    all_data += scrape_blackboard(login[0], login[1], login[2])
-
-                if login[0] == "demo" and login[3] == isSigned:
-                    all_data += scrape_demo(login[1], login[2], "file:///C:/Users/indmi/Documents/Codex/2026-06-25/i/outputs/mock-edu-portal.html")
     else:
         print("Working in memory...")
         connection = get_mem_connection()
@@ -132,22 +156,22 @@ def recieve_scraped(name, isSigned):
         memControl.execute("SELECT * FROM login")
         logins = memControl.fetchall()
 
-        all_data = ""
+    all_data = ""
 
-        if name == "All":
-            for login in logins:
+    if name == "All":
+        for login in logins:
 
-                if login[0] == "cengage" and login[3] == isSigned:
-                    all_data += scrape_cengage(login[0], login[1], login[2])
+            if login[0] == "cengage" and login[3] == isSigned:
+                all_data += scrape_cengage(login[0], login[1], login[2])
 
-                if login[0] == "zybooks" and login[3] == isSigned:
-                    all_data += scrape_zybooks(login[0], login[1], login[2])
+            if login[0] == "zybooks" and login[3] == isSigned:
+                all_data += scrape_zybooks(login[0], login[1], login[2])
 
-                if login[0] == "blackboard" and login[3] == isSigned:
-                    all_data += scrape_blackboard(login[0], login[1], login[2])
+            if login[0] == "blackboard" and login[3] == isSigned:
+                all_data += scrape_blackboard(login[0], login[1], login[2])
 
-                if login[0] == "demo" and login[3] == isSigned:
-                    all_data += scrape_demo(login[1], login[2],"file:///C:/Users/indmi/Documents/Codex/2026-06-25/i/outputs/mock-edu-portal.html")
+            if login[0] == "demo" and login[3] == isSigned:
+                all_data += scrape_demo(login[1], login[2],"file:///C:/Users/indmi/Documents/Codex/2026-06-25/i/outputs/mock-edu-portal.html")
     return all_data
 
 

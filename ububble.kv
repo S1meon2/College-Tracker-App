@@ -160,6 +160,7 @@ MDFloatLayout:
 
 <SettingsScreen>:
     name: "settings"
+    on_enter: root.load_settings()
     MDFloatLayout:
         md_bg_color: 0.1, 0.1, 0.1, 1 # Consistent background
 
@@ -208,6 +209,7 @@ MDFloatLayout:
 
             MDRaisedButton:
                 text: "Connect Blackboard"
+                id: connect_blackboard_button
                 pos_hint: {"center_x": 0.5}
                 size_hint_x: 0.8
                 on_press: root.choose_website("blackboard")
@@ -217,6 +219,7 @@ MDFloatLayout:
 
             MDRaisedButton:
                 text: "Connect Zybooks"
+                id: connect_zybooks_button
                 pos_hint: {"center_x": 0.5}
                 size_hint_x: 0.8
                 on_press: root.choose_website("zybooks")
@@ -226,6 +229,7 @@ MDFloatLayout:
 
             MDRaisedButton:
                 text: "Connect Cengage"
+                id: connect_cengage_button
                 pos_hint: {"center_x": 0.5}
                 size_hint_x: 0.8
                 on_press: root.choose_website("cengage")
@@ -235,6 +239,7 @@ MDFloatLayout:
 
             MDRaisedButton:
                 text: "Connect Demo"
+                id: connect_demo_button
                 pos_hint: {"center_x": 0.5}
                 size_hint_x: 0.8
                 on_press: root.choose_website("demo")
@@ -287,15 +292,21 @@ MDFloatLayout:
 
 <WebsiteDataScreen>:
     name: "enter web data"
+    on_enter: root.prepare_screen()
+    on_leave: root.reset_screen()
     MDFloatLayout:
 
         MDIconButton:
             icon: "home"
             pos_hint: {"top": 0.97, "right": 0.96}
             on_release: root.manager.current = "main"
+            icon_size: "48sp"
+            theme_text_color: "Custom"
+            text_color: 0.8, 0.6, 1, 1
 
         # --- Form Card ---
         MDCard:
+            id: website_data_card
             orientation: "vertical"
             size_hint: 0.85, 0.65
             pos_hint: {"center_x": 0.5, "center_y": 0.5}
@@ -305,13 +316,17 @@ MDFloatLayout:
             spacing: "20dp"
 
             MDLabel:
-                text: "Add Account"
+                id: website_label
+                text: "Connect to Website Account"
                 font_style: "H4"
                 bold: True
                 halign: "center"
                 size_hint_y: None
                 height: self.texture_size[1]
                 padding_y: "15dp"
+                theme_text_color: "Custom"
+                text_color: 0.8, 0.6, 1, 1
+                font_name: "data/fonts/Roboto-BoldItalic.ttf"
 
             MDTextField:
                 id: username_field
@@ -333,11 +348,38 @@ MDFloatLayout:
             Widget: # Spacer
 
             MDFillRoundFlatButton:
+                id: submit_button
                 text: "Submit"
                 pos_hint: {"center_x": 0.5}
                 size_hint_x: 0.8
                 on_press: root.save_to_login()
                 on_release: root.manager.current = "main"
+
+        MDFillRoundFlatButton:
+            id: disconnect_button
+            text: "Disconnect"
+            md_bg_color: 0.8, 0.1, 0.1, 1
+            pos_hint: {"center_x": 0.5, "center_y": 0.5}
+            size_hint: 0.6, 0.1
+            opacity: 0
+            disabled: True
+            on_release: root.disconnect_website()
+
+        MDLabel:
+            id: dis_label
+            text: "Connect to Website Account"
+            font_style: "H4"
+            bold: True
+            halign: "center"
+            pos_hint: {"center_y": 0.88}
+            size_hint_y: None
+            height: self.texture_size[1]
+            padding_y: "15dp"
+            padding_x: "15dp"
+            opacity: 0
+            theme_text_color: "Custom"
+            text_color: 0.8, 1, 0.6, 1
+            font_name: "data/fonts/Roboto-BoldItalic.ttf"
 
 
 <ClassAddScreen>:
@@ -669,19 +711,35 @@ MDFloatLayout:
             orientation: 'horizontal'
             spacing: dp(20)
 
-            ScrollView:
+            MDBoxLayout:
+                orientation: 'vertical'
                 size_hint_x: 0.4
-                MDBoxLayout:
-                    id: class_button_container
-                    orientation: 'vertical'
-                    spacing: dp(15)
+                spacing: dp(10)
+
+                MDRaisedButton:
+                    text: "Get assignments from ALL classes"
+                    on_press: root.get_all_assignments()
                     size_hint_y: None
-                    height: self.minimum_height
-                    MDFillRoundFlatButton:
-                        text: "Add Class"
-                        on_release: root.manager.current = "add a class"
-                        size_hint_x: 1
-                        height: "48dp"
+                    height: "48dp"
+                    size_hint_x: 1.0
+                    font_name: "RobotoMedium"
+                    md_bg_color: 0.4, 0.3, 0.5, 1
+
+                MDSeparator:
+                    height: "1dp"
+
+                ScrollView:
+                    MDBoxLayout:
+                        id: class_button_container
+                        orientation: 'vertical'
+                        spacing: dp(15)
+                        size_hint_y: None
+                        height: self.minimum_height
+                        MDFillRoundFlatButton:
+                            text: "Add Class"
+                            on_release: root.manager.current = "add a class"
+                            size_hint_x: 1
+                            height: "48dp"
 
             MDCard:
                 id: main_content_panel
