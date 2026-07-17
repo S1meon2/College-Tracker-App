@@ -1,29 +1,40 @@
+"""Welcome to U-Bubble!"""
+# Frontend Imports + "copy and paste function" import
 import webbrowser
 import pyperclip
+from kivymd.app import MDApp
+from kivy.clock import Clock
+from kivy.animation import Animation
+from kivymd.uix.menu import MDDropdownMenu
+from kivymd.uix.card import MDCard
+from kivy.properties import StringProperty, ColorProperty, BooleanProperty
 from kivy.core.window import Window
-from G_Tools import google_auth, sync_assignments_to_tasks
+from kivymd.uix.button import MDFillRoundFlatButton
+from kivy.uix.screenmanager import Screen
+#######################################################################################################
+# Internal Imports
+from G_Tools import (
+    google_auth, sync_assignments_to_tasks
+)
 from ububbleDB import (
     send_login, get_login, send_class, recieve_scraped,
     send_account, get_classes, delete_class, edit_class, delete_login
 )
-from kivymd.app import MDApp
-from kivy.clock import Clock
-from kivy.animation import Animation
-from Assignment_WEB import scrape_cengage, scrape_zybooks, scrape_blackboard, scrape_demo
-from kivymd.uix.menu import MDDropdownMenu
-from kivymd.uix.card import MDCard
-from kivy.properties import StringProperty, ColorProperty, BooleanProperty
-from kivymd.uix.button import MDFillRoundFlatButton
-from kivy.uix.screenmanager import Screen
-
-# Here are the screen's python logic and functions
+from Assignment_WEB import (
+    scrape_cengage, scrape_zybooks, scrape_blackboard, scrape_demo
+)
+#########################################################################################################
+# App Screens and their python logic, most functions are connected to buttons in the KV file
 class MainScreen(Screen):
+
     def account_in(self):
+        """Once the user signs in, the sign-in button changes color and says welcome to the user"""
         self.ids.sign_in_button.text = f"Welcome {MDApp.get_running_app().isSignedIn}!"
         self.ids.sign_in_button.md_bg_color = [0.67, 0.6, 0.66, 1]
         self.ids.sign_in_button.text_color = [1, 1, 1, 1]
 
     def account_out(self):
+        """Once the user signs out, the sign-in button changes color and says sign in"""
         self.ids.sign_in_button.text = "Sign in"
         self.ids.sign_in_button.md_bg_color = [0.3, 0.2, 0.4, 1]
         self.ids.sign_in_button.text_color = [1, 1, 1, 1]
@@ -31,14 +42,19 @@ class MainScreen(Screen):
 class SettingsScreen(Screen):
 
     def connect_google(self):
+        """Authenticate the connection to google services so that we can modify tasks"""
         MDApp.get_running_app().show_notif("Opening browser for Google Authentication...","process")
-        google_auth()
+        if google_auth():
+            MDApp.get_running_app().show_notif("Automatically Signed back in to google!", "success")
+
 
     def get_gemini_key(self):
+        """Send user to get their own api key, should be easy for them to find"""
         webbrowser.open("https://aistudio.google.com/app/apikey")
         MDApp.get_running_app().show_notif("Opening browser to get Gemini API Key...", "process")
 
     def save_api_key(self):
+        """Have the api entered from the text field put in its own text file"""
         api_key = self.ids.api_key_field.text
         if api_key.strip():
             with open("api_key.txt", "w") as f:
@@ -48,6 +64,7 @@ class SettingsScreen(Screen):
             MDApp.get_running_app().show_notif("Please enter a valid API key.", "error")
 
     def choose_website(self, text):
+        """If the selected website has already been connected, then when it's pressed, the user will be taken to a disconnect screen"""
         MDApp.get_running_app().websiteName = text
         if get_login(text, MDApp.get_running_app().isSignedIn) == text:
             MDApp.get_running_app().disconnect_mode = True
@@ -56,6 +73,7 @@ class SettingsScreen(Screen):
         self.manager.current = "enter web data"
 
     def load_settings(self):
+        """Internal search for if a website is connected in the DB, if it is then the button turns green for that connection"""
         for site in ["blackboard", "zybooks", "cengage", "demo"]:
             if get_login(site, MDApp.get_running_app().isSignedIn) == site:
                 self.ids[f"connect_{site}_button"].text = f"{site.capitalize()} Connected"
@@ -67,6 +85,7 @@ class SettingsScreen(Screen):
 class ClassAddScreen(Screen):
 
     def save_to_class(self):
+        """Create a class item and save it to the database"""
         classname = self.ids.class_name.text
         webname = self.ids.assignment_website.text
         assignmentpage = self.ids.assignment_page_input.text
@@ -76,6 +95,7 @@ class ClassAddScreen(Screen):
 class SignInScreen(Screen):
     
     def sign_in(self):
+        """Sign the user in, then the page changes to just a "Log out" button and send user back to main screen"""
         MDApp.get_running_app().isSignedIn = send_account(self.ids.username_field.text,self.ids.pin_field.text)
         self.ids.sign_in_card.opacity = 0
         self.ids.sign_in_card.disabled = True
@@ -84,6 +104,7 @@ class SignInScreen(Screen):
         self.manager.get_screen('main').account_in()
         
     def sign_out(self):
+        """Sign the user out, then the page changes back to the option for the user to sign in"""
         MDApp.get_running_app().isSignedIn = "user"
         self.ids.sign_in_card.opacity = 1
         self.ids.sign_in_card.disabled = False
@@ -93,6 +114,7 @@ class SignInScreen(Screen):
 
 class WebsiteDataScreen(Screen):
     def prepare_screen(self):
+        """Switch between the original screen that asks user to sign in and a disconnect button only on the screen"""
         if MDApp.get_running_app().disconnect_mode:
             self.ids.website_data_card.opacity = 0
             self.ids.website_data_card.disabled = True
@@ -160,8 +182,21 @@ class ClassEditScreen(Screen):
         oldname = classname
 
     def edit(self):
-        edit_class(MDApp.get_running_app().isSignedIn, self.ids.class_name.text, self.ids.assignment_website.text, self.ids.assignment_page.text, oldname)
-        MDApp.get_running_app().show_notif(self.ids.class_name.text + " has been edited!", "success")
+        try:
+            edit_class(MDApp.get_running_app().isSignedIn, self.ids.class_name.text, self.ids.assignment_website.text, self.ids.assignment_page.text, oldname)
+            MDApp.get_running_app().show_notif(self.ids.class_name.text + " has been edited!", "success")
+        except:
+            MDApp.get_running_app().show_notif("No Class selected or Invalid Class", "error")
+
+    def delete_class(self):
+        try:
+            delete_class(oldname, MDApp.get_running_app().isSignedIn)
+            MDApp.get_running_app().show_notif(oldname + " has been deleted.", "success")
+        except:
+            MDApp.get_running_app().show_notif("No Class selected or Invalid Class", "error")
+
+
+
 
 class ClassesScreen(Screen):
     def populate_classes(self):
@@ -256,5 +291,6 @@ class UBubbleApp(MDApp):
         self.theme_cls.theme_style = "Dark"
         return
 
+# Start
 if __name__ == "__main__":
     UBubbleApp().run()

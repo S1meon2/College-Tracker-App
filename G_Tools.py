@@ -60,6 +60,7 @@ def google_auth():
     # Have you signed in before? The token is what allows the software to get and edit data from the scope |google tasks|
     if os.path.exists('token.json'):
         creds = Credentials.from_authorized_user_file('token.json', Tasks)
+        return True
 
     # Expired access can get refreshed here
     if not creds or not creds.valid:

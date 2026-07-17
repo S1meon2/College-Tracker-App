@@ -191,7 +191,7 @@ def get_page(dbSite, isSignedIn):
         return classItem[0][3]
 
 
-
+#######################################################################################################
 
 def send_class(classname, webname, classid, assignmentpage, isSignedIn):
     data = (classname, webname, classid, assignmentpage, isSignedIn)
