@@ -1,3 +1,5 @@
+""" Welcome to U-Bubble's connection to Google!: Google Tasks, Gemini API, OAuth 2.0 """
+# Google Imports
 import time
 import json
 import os.path
@@ -23,7 +25,6 @@ model = genai.GenerativeModel(
    )
 
 ########################################################################################################################
-
 
 def extract_assignments(raw_text):
 
@@ -54,6 +55,7 @@ def extract_assignments(raw_text):
 ########################################################################################################################
 
 def google_auth():
+    """Connect to user Google account, connect to the U-Bubble app on Google Cloud, and connect to Google Tasks"""
     creds = None
     Tasks = ['https://www.googleapis.com/auth/tasks']
 
@@ -81,6 +83,7 @@ def google_auth():
 ########################################################################################################################
 
 def sync_assignments_to_tasks(raw_scraped_text):
+    #Create Tasks from data and send to google tasks
    print("AI is processing assignments...")
    try:
        assignments = extract_assignments(raw_scraped_text)
@@ -162,7 +165,7 @@ def sync_assignments_to_tasks(raw_scraped_text):
 
 
 
-###DEBUG
+###DEBUG - Check for existing lists
 def check_task_lists():
    service = google_auth()
 

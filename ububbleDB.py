@@ -1,13 +1,19 @@
+"""Welcome to U-Bubble's Local Database!"""
+# Imports: SQLite and Kivy App for notification handling
 import sqlite3
-from Assignment_WEB import scrape_cengage, scrape_zybooks, scrape_blackboard, scrape_demo
 from kivymd.app import MDApp
+###################################################################################################################################
+# Internal Imports
+from Assignment_WEB import (
+    scrape_cengage, scrape_zybooks, scrape_blackboard, scrape_demo
+)
+######################################################################################################################################
 
 # Global variable to hold the in-memory database connection
 mem_connection = None
 
 def get_mem_connection():
-    """   Creates and returns a single in-memory database connection.
-          Initializes tables if the connection is new.                                               """
+    """Creates and returns a single in-memory database connection.Initializes tables if the connection is new."""
     global mem_connection
     if mem_connection is None:
         mem_connection = sqlite3.connect(':memory:')
@@ -70,11 +76,12 @@ def create_account_table():
     connection.close()
 
 ########################################################################################################################
-
 def send_login(name, userName, userPass, isSigned):
+    """Send login info to DB"""
     data = (name, userName, userPass, isSigned)
 
     if isSigned != "user":
+        # User is signed in and the login will be saved to their account
 
         connection = sqlite3.connect("ububble.db")
 
@@ -92,6 +99,7 @@ def send_login(name, userName, userPass, isSigned):
         return name
 
     else:
+        # save login to temp memory
         memConnection = get_mem_connection()
         memControl = memConnection.cursor()
         memControl.execute("INSERT OR IGNORE INTO login VALUES (?, ?, ?, ?)", data)
@@ -103,6 +111,7 @@ def send_login(name, userName, userPass, isSigned):
         return name
 
 def get_login(name,isSignedIn):
+    """Get login info from DB"""
     if isSignedIn != "user":
         connection = sqlite3.connect('ububble.db')
         control = connection.cursor()
@@ -126,6 +135,7 @@ def get_login(name,isSignedIn):
             return ""
 
 def delete_login(name, isSignedIn):
+    """Delete login info from DB"""
     if isSignedIn != "user":
         connection = sqlite3.connect('ububble.db')
         control = connection.cursor()
@@ -142,6 +152,7 @@ def delete_login(name, isSignedIn):
 
 ############################################################################################################
 def recieve_scraped(name, isSigned):
+    """Send webscraper to get raw text of assignments based off of the connected websites and signed in user"""
     if isSigned != "user":
         connection = sqlite3.connect('ububble.db')
         control = connection.cursor()
@@ -172,10 +183,12 @@ def recieve_scraped(name, isSigned):
 
             if login[0] == "demo" and login[3] == isSigned:
                 all_data += scrape_demo(login[1], login[2],"file:///C:/Users/indmi/Documents/Codex/2026-06-25/i/outputs/mock-edu-portal.html")
+
     return all_data
 
 
 def get_page(dbSite, isSignedIn):
+    """Get assignment page from DB"""
     if isSignedIn != "user":
         connection = sqlite3.connect('ububble.db')
         control = connection.cursor()
@@ -191,9 +204,10 @@ def get_page(dbSite, isSignedIn):
         return classItem[0][3]
 
 
-#######################################################################################################
+################################################################################################################################################
 
 def send_class(classname, webname, classid, assignmentpage, isSignedIn):
+    """Send class info to DB"""
     data = (classname, webname, classid, assignmentpage, isSignedIn)
 
     if isSignedIn != "user":
@@ -228,6 +242,7 @@ def send_class(classname, webname, classid, assignmentpage, isSignedIn):
         print(classname + " has been added and can now be scraped!")
 
 def get_classes(isSignedIn):
+    """Get classes from DB"""
     if isSignedIn != "user":
         connection = sqlite3.connect('ububble.db')
         control = connection.cursor()
@@ -243,6 +258,7 @@ def get_classes(isSignedIn):
         return classes
 
 def edit_class(isSignedIn,newname, newweb, newpage, oldname):
+    """Update class in DB"""
     if isSignedIn != "user":
         connection = sqlite3.connect('ububble.db')
         control = connection.cursor()
@@ -256,6 +272,7 @@ def edit_class(isSignedIn,newname, newweb, newpage, oldname):
         memConnection.commit()
 
 def delete_class(classname, isSignedIn):
+    """Delete class from DB"""
     if isSignedIn != "user":
         connection = sqlite3.connect('ububble.db')
         control = connection.cursor()
@@ -268,7 +285,9 @@ def delete_class(classname, isSignedIn):
         memControl.execute("DELETE FROM class WHERE classname=? AND isSigned=?", (classname, isSignedIn))
         memConnection.commit()
 
+######################################################################################################################################
 def send_account(username, pin):
+    """Add account to DB"""
     data = (username,pin)
     connection = sqlite3.connect('ububble.db')
     control = connection.cursor()
@@ -292,6 +311,7 @@ def send_account(username, pin):
         return username
 
 def retrieve_account(_username,_pin):
+    """Retrieve account from DB"""
     connection = sqlite3.connect('ububble.db')
     control = connection.cursor()
     control.execute("SELECT * FROM account WHERE username = ? AND pin = ?", (_username, _pin))
@@ -301,6 +321,7 @@ def retrieve_account(_username,_pin):
     if sign:
         return sign[0][0]
     return None
+##########################################################################################################################################
 
 """Manually delete Tables & Data"""
 connection = sqlite3.connect('ububble.db')

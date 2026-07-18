@@ -126,6 +126,7 @@ class WebsiteDataScreen(Screen):
             self.ids.website_label.text = f"Connect to {MDApp.get_running_app().websiteName.capitalize()}"
 
     def reset_screen(self):
+        """Reset connection screen back to how it's originaly viewed"""
         self.ids.website_data_card.opacity = 1
         self.ids.website_data_card.disabled = False
         self.ids.disconnect_button.opacity = 0
@@ -135,6 +136,7 @@ class WebsiteDataScreen(Screen):
         self.ids.password_field.text = ""
 
     def save_to_login(self):
+        """Save the user's login information to the database, "connect to website" """
         name = MDApp.get_running_app().websiteName
         userName = self.ids.username_field.text
         userPass = self.ids.password_field.text
@@ -144,6 +146,7 @@ class WebsiteDataScreen(Screen):
         self.manager.current = "settings"
 
     def disconnect_website(self):
+        """Delete the user's login information from the database, aka "Disconnect from website" """
         website_name = MDApp.get_running_app().websiteName
         delete_login(website_name, MDApp.get_running_app().isSignedIn)
         MDApp.get_running_app().show_notif(f"{website_name.capitalize()} disconnected.", "success")
@@ -151,9 +154,15 @@ class WebsiteDataScreen(Screen):
         self.manager.current = "settings"
 
 class ClassEditScreen(Screen):
+    # Clear Drop-down menu
     menu = None
+    def open_menu(self):
+        """Open the drop-down menu when clicked"""
+        if self.menu:
+            self.menu.open()
 
     def on_enter(self):
+        """Populate drop-down menu with current classes"""
         class_names = get_classes(MDApp.get_running_app().isSignedIn)
         menu_items = [
             {
@@ -168,11 +177,8 @@ class ClassEditScreen(Screen):
             width_mult=4,
         )
 
-    def open_menu(self):
-        if self.menu:
-            self.menu.open()
-
     def set_item(self, classname, classweb, classpage):
+        """Pre-fill the text fields with the selected class information"""
         self.ids.class_dropdown_btn.text = f"Selected: {classname}"
         self.menu.dismiss()
         self.ids.class_name.text = classname
@@ -182,6 +188,7 @@ class ClassEditScreen(Screen):
         oldname = classname
 
     def edit(self):
+        """Confirm the edit of the selected class information"""
         try:
             edit_class(MDApp.get_running_app().isSignedIn, self.ids.class_name.text, self.ids.assignment_website.text, self.ids.assignment_page.text, oldname)
             MDApp.get_running_app().show_notif(self.ids.class_name.text + " has been edited!", "success")
@@ -189,17 +196,16 @@ class ClassEditScreen(Screen):
             MDApp.get_running_app().show_notif("No Class selected or Invalid Class", "error")
 
     def delete_class(self):
+        """Confirm the deletion of the selected class"""
         try:
             delete_class(oldname, MDApp.get_running_app().isSignedIn)
             MDApp.get_running_app().show_notif(oldname + " has been deleted.", "success")
         except:
             MDApp.get_running_app().show_notif("No Class selected or Invalid Class", "error")
 
-
-
-
 class ClassesScreen(Screen):
     def populate_classes(self):
+        """Create buttons for each class created by the user"""
         self.ids.class_button_container.clear_widgets()
         classes = get_classes(MDApp.get_running_app().isSignedIn)
         for class_info in classes:
@@ -212,17 +218,21 @@ class ClassesScreen(Screen):
             self.ids.class_button_container.add_widget(btn)
 
     def update_panel(self, class_name, website_name):
+        """Update the panel based off of the selected class"""
         self.ids.class_title.text = class_name
         self.ids.class_website.text = website_name
 
     def text_to_copy(self, text):
+        """Show the user the text that they can copy to their clipboard"""
         self.ids.copy_box.text = text
 
     def copy_to_clipboard(self):
+        """Copy the text to the clipboard"""
         pyperclip.copy(raw_text)
         MDApp.get_running_app().show_notif("Text copied to clipboard!", "success")
 
     def get_assignments_to_tasks(self):
+        """Extract the info from the selected class and send it to google tasks or allow user to copy the raw text themselves"""
         MDApp.get_running_app().show_notif("Getting assignments...", "process")
         global raw_text
         raw_text = recieve_scraped(self.ids.class_website.text, MDApp.get_running_app().isSignedIn)
@@ -234,16 +244,19 @@ class ClassesScreen(Screen):
             MDApp.get_running_app().show_notif("No assignments found to sync. Maybe sign in or connect a site.", "error")
 
 class TopNotification(MDCard):
+    # initialize the notification text and it's color (purple by default)
     message_text = StringProperty("")
     message_color = ColorProperty([0.7, 0.3, 1, 1])
 
     def __init__(self, **kwargs):
+        """Intitialize text and animation"""
         super().__init__(**kwargs)
         self.full_text = ""
         self.char_index = 0
         self.type_event = None
 
     def show(self, text, notif_type="process"):
+        """Notification animation and colors based off of situation"""
         if notif_type == "error":
             self.message_color = [1, 0.3, 0.3, 1]
         elif notif_type == "success":
@@ -259,11 +272,13 @@ class TopNotification(MDCard):
         anim.start(self)
 
     def start_typing(self, *args):
+        """Typing animation for the notification"""
         if self.type_event:
             self.type_event.cancel()
         self.type_event = Clock.schedule_interval(self.type_next_char, 0.03)
 
     def type_next_char(self, dt):
+        """Type the notification character by character then hide it at the end"""
         if self.char_index < len(self.full_text):
             self.message_text += self.full_text[self.char_index]
             self.char_index += 1
@@ -272,21 +287,24 @@ class TopNotification(MDCard):
             Clock.schedule_once(self.hide, 3)
 
     def hide(self, dt):
+        """Hide the notification"""
         anim = Animation(pos_hint={"center_x": 0.5, "top": 1.2}, duration=0.4, t="in_quad")
         anim.start(self)
 
 class UBubbleApp(MDApp):
-    classID = className = classWeb = websiteName = user_name = user_pass = ""
     isSignedIn = "user"
     disconnect_mode = BooleanProperty(False)
 
     def show_notif(self, text, notif_type="process"):
+        """Make notification"""
         self.root.ids.global_notif.show(text, notif_type)
 
     def on_start(self):
+        """Starting welcome and instructions"""
         self.show_notif("Welcome to U-Bubble! Sign in to get started.","success")
 
     def build(self):
+        """Set theme and colors"""
         self.theme_cls.primary_palette = "Purple"
         self.theme_cls.theme_style = "Dark"
         return
