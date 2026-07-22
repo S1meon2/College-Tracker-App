@@ -239,6 +239,7 @@ def send_class(classname, webname, classid, assignmentpage, isSignedIn):
     data = (classname, webname, classid, assignmentpage, isSignedIn)
 
     if isSignedIn != "user":
+        create_class_table()
 
         connection = sqlite3.connect("ububble.db")
 
@@ -272,6 +273,7 @@ def send_class(classname, webname, classid, assignmentpage, isSignedIn):
 def get_classes(isSignedIn):
     """Get classes from DB"""
     if isSignedIn != "user":
+        create_class_table()
         connection = sqlite3.connect('ububble.db')
         control = connection.cursor()
         control.execute("SELECT classname, webname, assignmentpage FROM class WHERE isSigned=?", (isSignedIn,))
@@ -288,6 +290,7 @@ def get_classes(isSignedIn):
 def edit_class(isSignedIn,newname, newweb, newpage, oldname):
     """Update class in DB"""
     if isSignedIn != "user":
+        create_class_table()
         connection = sqlite3.connect('ububble.db')
         control = connection.cursor()
         control.execute(("UPDATE class SET classname = ?, webname = ?, assignmentpage = ? WHERE classname = ?"), (newname, newweb, newpage, oldname))
