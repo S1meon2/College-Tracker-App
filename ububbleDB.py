@@ -53,10 +53,8 @@ def create_class_table():
     control = connection.cursor()
 
     control.execute("""CREATE TABLE IF NOT EXISTS
-
-        class (name TEXT, website TEXT, id TEXT)
-
-    """)
+            class (classname TEXT, webname TEXT, classid TEXT, assignmentpage TEXT, isSigned TEXT)
+        """)
 
     connection.commit()
     connection.close()
