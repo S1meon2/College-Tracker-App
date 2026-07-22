@@ -145,7 +145,7 @@ def delete_login(name, isSignedIn):
         memConnection = get_mem_connection()
         memControl = memConnection.cursor()
         memControl.execute("DELETE FROM login WHERE name=? AND isSigned=?", (name, isSignedIn))
-        memConnection.coe
+        memConnection.commit()
 ############################################################################################################
 def recieve_scraped(classname, name, isSigned):
     """Send webscraper to get raw text of assignments based off of the connected websites and signed in user"""
@@ -353,10 +353,10 @@ def retrieve_account(_username,_pin):
 ##########################################################################################################################################
 
 """Manually delete Tables & Data"""
-connection = sqlite3.connect('ububble.db')
-control = connection.cursor()
+#connection = sqlite3.connect('ububble.db')
+#control = connection.cursor()
 #control.execute("DROP TABLE class")
 #control.execute(" DELETE FROM login WHERE name = 'demo' ")
-connection.commit()
-connection.close()
+#connection.commit()
+#connection.close()
 
