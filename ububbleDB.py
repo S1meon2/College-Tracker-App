@@ -146,20 +146,15 @@ def delete_login(name, isSignedIn):
         memConnection = get_mem_connection()
         memControl = memConnection.cursor()
         memControl.execute("DELETE FROM login WHERE name=? AND isSigned=?", (name, isSignedIn))
-        memConnection.commit()
-
-
-
+        memConnection.coe
 ############################################################################################################
-def recieve_scraped(name, isSigned):
+def recieve_scraped(classname, name, isSigned):
     """Send webscraper to get raw text of assignments based off of the connected websites and signed in user"""
     if isSigned != "user":
         connection = sqlite3.connect('ububble.db')
         control = connection.cursor()
         control.execute("SELECT * FROM login")
         logins = control.fetchall()
-
-
     else:
         print("Working in memory...")
         connection = get_mem_connection()
@@ -169,39 +164,71 @@ def recieve_scraped(name, isSigned):
 
     all_data = ""
 
-    if name == "All":
-        for login in logins:
+    for login in logins:
 
-            if login[0] == "cengage" and login[3] == isSigned:
-                all_data += scrape_cengage(login[0], login[1], login[2])
+        if name == login[0] == "cengage" and login[3] == isSigned:
+            all_data += scrape_cengage(login[1], login[2], get_page(classname, "cengage", isSigned))
 
-            if login[0] == "zybooks" and login[3] == isSigned:
-                all_data += scrape_zybooks(login[0], login[1], login[2])
+        if name == "zybooks" and login[0] == "zybooks" and login[3] == isSigned:
+            all_data += scrape_zybooks(login[1], login[2], get_page(classname, "zybooks", isSigned))
 
-            if login[0] == "blackboard" and login[3] == isSigned:
-                all_data += scrape_blackboard(login[0], login[1], login[2])
+        if name == "blackboard" == login[0] == "blackboard" and login[3] == isSigned:
+            all_data += scrape_blackboard(login[1], login[2], get_page(classname, "blackboard", isSigned))
 
-            if login[0] == "demo" and login[3] == isSigned:
-                all_data += scrape_demo(login[1], login[2],"file:///C:/Users/indmi/Documents/Codex/2026-06-25/i/outputs/mock-edu-portal.html")
+        if name == login[0] == "demo" and login[3] == isSigned:
+            all_data += scrape_demo(login[1], login[2], get_page(classname, "demo", isSigned))
 
     return all_data
 
+def all_scraped(isSigned):
+    """Scrape ALL classes"""
+    if isSigned != "user":
+        connection = sqlite3.connect('ububble.db')
+        control = connection.cursor()
+        control.execute("SELECT * FROM class")
+        classes = control.fetchall()
+    else:
+        print("Working in memory...")
+        connection = get_mem_connection()
+        memControl = connection.cursor()
+        memControl.execute("SELECT * FROM class")
+        classes = memControl.fetchall()
 
-def get_page(dbSite, isSignedIn):
+    all_data = ""
+
+    for clas in classes:
+
+        if clas[4] == isSigned:
+            all_data = recieve_scraped(clas[0], clas[1], clas[4])
+
+    if all_data:
+        return all_data
+    else:
+        MDApp.get_running_app().show_notif("You have no classes to scrape.", "error")
+
+
+
+def get_page(cn, dbSite, isSignedIn):
     """Get assignment page from DB"""
     if isSignedIn != "user":
         connection = sqlite3.connect('ububble.db')
         control = connection.cursor()
-        control.execute("SELECT * FROM class WHERE webname=?", (dbSite,))
+        control.execute("SELECT * FROM class WHERE webname=? AND classname=?", (dbSite,cn))
         classItem = control.fetchall()
         connection.close()
-        return classItem[0][3]
+        if classItem:
+            return classItem[0][3]
+        else:
+            print("No page found")
     else:
         memConnection = get_mem_connection()
         memControl = memConnection.cursor()
         memControl.execute("SELECT * FROM class WHERE webname=?", (dbSite,))
         classItem = memControl.fetchall()
-        return classItem[0][3]
+        if classItem:
+            return classItem[0][3]
+        else:
+            print("No page found")
 
 
 ################################################################################################################################################

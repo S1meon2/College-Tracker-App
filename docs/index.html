@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Northbridge Learning Portal</title>
+  <style>
+    :root {
+      --ink: #1f2933;
+      --muted: #5c6f82;
+      --line: #d9e2ec;
+      --surface: #ffffff;
+      --page: #f4f7fb;
+      --accent: #1f7a8c;
+      --accent-dark: #155d6a;
+      --danger: #b42318;
+      --success: #237b4b;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--page);
+      color: var(--ink);
+      line-height: 1.5;
+    }
+
+    header {
+      background: #203040;
+      color: #ffffff;
+      padding: 18px 24px;
+    }
+
+    .header-inner {
+      max-width: 1080px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand {
+      font-size: 21px;
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+
+    .session-status {
+      font-size: 14px;
+      color: #dbe7f3;
+    }
+
+    main {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 28px 24px 48px;
+    }
+
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: 0 8px 24px rgba(31, 41, 51, 0.06);
+    }
+
+    #login-section {
+      max-width: 440px;
+      margin: 44px auto;
+      padding: 28px;
+    }
+
+    h1,
+    h2 {
+      margin: 0 0 10px;
+      letter-spacing: 0;
+    }
+
+    h1 {
+      font-size: 26px;
+    }
+
+    h2 {
+      font-size: 24px;
+    }
+
+    .help-text {
+      margin: 0 0 22px;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    label {
+      display: block;
+      margin: 14px 0 6px;
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    input {
+      width: 100%;
+      border: 1px solid #bcccdc;
+      border-radius: 6px;
+      padding: 11px 12px;
+      font-size: 16px;
+      color: var(--ink);
+      background: #ffffff;
+    }
+
+    input:focus {
+      outline: 3px solid rgba(31, 122, 140, 0.18);
+      border-color: var(--accent);
+    }
+
+    button {
+      border: 0;
+      border-radius: 6px;
+      padding: 11px 16px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      background: var(--accent);
+      color: #ffffff;
+    }
+
+    button:hover,
+    button:focus {
+      background: var(--accent-dark);
+    }
+
+    .login-actions {
+      margin-top: 22px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .error-message {
+      display: none;
+      margin-top: 16px;
+      color: var(--danger);
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .error-message.visible {
+      display: block;
+    }
+
+    #dashboard-section {
+      display: none;
+    }
+
+    #dashboard-section.is-visible {
+      display: block;
+    }
+
+    .dashboard-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 20px;
+    }
+
+    .student-summary {
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin: 0 0 20px;
+    }
+
+    .summary-card {
+      padding: 16px;
+    }
+
+    .summary-label {
+      display: block;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .summary-value {
+      display: block;
+      margin-top: 4px;
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    .assignment-table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #ffffff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    caption {
+      text-align: left;
+      padding: 16px;
+      font-size: 18px;
+      font-weight: 700;
+      background: #eef4f8;
+    }
+
+    th,
+    td {
+      padding: 13px 14px;
+      border-top: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+      font-size: 15px;
+    }
+
+    th {
+      background: #f8fafc;
+      color: #334e68;
+      font-size: 13px;
+      text-transform: uppercase;
+    }
+
+    .status-open {
+      color: var(--success);
+      font-weight: 700;
+    }
+
+    .status-upcoming {
+      color: #8a5a00;
+      font-weight: 700;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (max-width: 720px) {
+      .header-inner,
+      .dashboard-top {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .summary-grid {
+        grid-template-columns: 1fr;
+      }
+
+      main {
+        padding: 20px 14px 36px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <div class="brand" id="site-title">Northbridge Learning Portal</div>
+      <div class="session-status" id="session-status">Signed out</div>
+    </div>
+  </header>
+
+  <main>
+    <section id="login-section" class="panel" data-page="login">
+      <h1>Student Sign In</h1>
+      <p class="help-text">Enter your student portal credentials to view upcoming assignments.</p>
+
+      <form id="login-form" data-testid="login-form">
+        <label for="username">Username</label>
+        <input id="username" name="username" data-testid="username-input" type="text" autocomplete="username">
+
+        <label for="password">Password</label>
+        <input id="password" name="password" data-testid="password-input" type="password" autocomplete="current-password">
+
+        <div class="login-actions">
+          <button id="sign-in-button" data-testid="sign-in-button" type="submit">Sign In</button>
+        </div>
+
+        <div id="login-error" class="error-message" data-testid="login-error" role="alert">
+          Incorrect username or password.
+        </div>
+      </form>
+    </section>
+
+    <section id="dashboard-section" data-page="assignments" data-testid="assignments-page">
+      <div class="dashboard-top">
+        <div>
+          <h2>Assignments</h2>
+          <p class="student-summary" id="student-summary" data-testid="student-summary">
+            Welcome, username. Review the assignments below for August and September.
+          </p>
+        </div>
+        <button id="sign-out-button" data-testid="sign-out-button" type="button">Sign Out</button>
+      </div>
+
+      <div class="summary-grid" aria-label="Assignment summary">
+        <div class="panel summary-card" id="total-assignments-card" data-testid="total-assignments-card">
+          <span class="summary-label">Total Assignments</span>
+          <span class="summary-value" data-field="total-assignments">8</span>
+        </div>
+        <div class="panel summary-card" id="august-assignments-card" data-testid="august-assignments-card">
+          <span class="summary-label">August</span>
+          <span class="summary-value" data-field="august-count">4</span>
+        </div>
+        <div class="panel summary-card" id="september-assignments-card" data-testid="september-assignments-card">
+          <span class="summary-label">September</span>
+          <span class="summary-value" data-field="september-count">4</span>
+        </div>
+      </div>
+
+      <div class="assignment-table-wrap">
+        <table id="assignments-table" data-testid="assignments-table">
+          <caption>Upcoming Course Work</caption>
+          <thead>
+            <tr>
+              <th scope="col">Assignment ID</th>
+              <th scope="col">Course</th>
+              <th scope="col">Assignment Name</th>
+              <th scope="col">Due Date</th>
+              <th scope="col">Points</th>
+              <th scope="col">Status</th>
+            </tr>
+          </thead>
+          <tbody id="assignments-body">
+            <tr class="assignment-row" data-assignment-id="AUG-101" data-course="Biology" data-due-date="2026-08-05" data-points="40" data-status="Open">
+              <td class="assignment-id">AUG-101</td>
+              <td class="course-name">Biology</td>
+              <td class="assignment-title">Cell Structure Diagram</td>
+              <td class="due-date"><time datetime="2026-08-05">August 5, 2026</time></td>
+              <td class="points">40</td>
+              <td class="assignment-status status-open">Open</td>
+            </tr>
+            <tr class="assignment-row" data-assignment-id="AUG-118" data-course="World History" data-due-date="2026-08-12" data-points="60" data-status="Open">
+              <td class="assignment-id">AUG-118</td>
+              <td class="course-name">World History</td>
+              <td class="assignment-title">Ancient Trade Routes Essay</td>
+              <td class="due-date"><time datetime="2026-08-12">August 12, 2026</time></td>
+              <td class="points">60</td>
+              <td class="assignment-status status-open">Open</td>
+            </tr>
+            <tr class="assignment-row" data-assignment-id="AUG-224" data-course="Algebra II" data-due-date="2026-08-21" data-points="35" data-status="Upcoming">
+              <td class="assignment-id">AUG-224</td>
+              <td class="course-name">Algebra II</td>
+              <td class="assignment-title">Quadratic Functions Practice</td>
+              <td class="due-date"><time datetime="2026-08-21">August 21, 2026</time></td>
+              <td class="points">35</td>
+              <td class="assignment-status status-upcoming">Upcoming</td>
+            </tr>
+            <tr class="assignment-row" data-assignment-id="AUG-309" data-course="English Literature" data-due-date="2026-08-28" data-points="50" data-status="Upcoming">
+              <td class="assignment-id">AUG-309</td>
+              <td class="course-name">English Literature</td>
+              <td class="assignment-title">Short Story Annotation Packet</td>
+              <td class="due-date"><time datetime="2026-08-28">August 28, 2026</time></td>
+              <td class="points">50</td>
+              <td class="assignment-status status-upcoming">Upcoming</td>
+            </tr>
+            <tr class="assignment-row" data-assignment-id="SEP-041" data-course="Chemistry" data-due-date="2026-09-03" data-points="45" data-status="Open">
+              <td class="assignment-id">SEP-041</td>
+              <td class="course-name">Chemistry</td>
+              <td class="assignment-title">Lab Safety Reflection</td>
+              <td class="due-date"><time datetime="2026-09-03">September 3, 2026</time></td>
+              <td class="points">45</td>
+              <td class="assignment-status status-open">Open</td>
+            </tr>
+            <tr class="assignment-row" data-assignment-id="SEP-087" data-course="Geometry" data-due-date="2026-09-10" data-points="30" data-status="Upcoming">
+              <td class="assignment-id">SEP-087</td>
+              <td class="course-name">Geometry</td>
+              <td class="assignment-title">Triangle Proofs Worksheet</td>
+              <td class="due-date"><time datetime="2026-09-10">September 10, 2026</time></td>
+              <td class="points">30</td>
+              <td class="assignment-status status-upcoming">Upcoming</td>
+            </tr>
+            <tr class="assignment-row" data-assignment-id="SEP-156" data-course="Civics" data-due-date="2026-09-18" data-points="55" data-status="Upcoming">
+              <td class="assignment-id">SEP-156</td>
+              <td class="course-name">Civics</td>
+              <td class="assignment-title">Local Government Research Brief</td>
+              <td class="due-date"><time datetime="2026-09-18">September 18, 2026</time></td>
+              <td class="points">55</td>
+              <td class="assignment-status status-upcoming">Upcoming</td>
+            </tr>
+            <tr class="assignment-row" data-assignment-id="SEP-231" data-course="Computer Science" data-due-date="2026-09-25" data-points="70" data-status="Upcoming">
+              <td class="assignment-id">SEP-231</td>
+              <td class="course-name">Computer Science</td>
+              <td class="assignment-title">Intro to Web Scraping Notes</td>
+              <td class="due-date"><time datetime="2026-09-25">September 25, 2026</time></td>
+              <td class="points">70</td>
+              <td class="assignment-status status-upcoming">Upcoming</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const VALID_USERNAME = "username";
+    const VALID_PASSWORD = "password";
+
+    const loginSection = document.getElementById("login-section");
+    const dashboardSection = document.getElementById("dashboard-section");
+    const loginForm = document.getElementById("login-form");
+    const loginError = document.getElementById("login-error");
+    const sessionStatus = document.getElementById("session-status");
+    const signOutButton = document.getElementById("sign-out-button");
+
+    function showDashboard() {
+      loginSection.classList.add("hidden");
+      dashboardSection.classList.add("is-visible");
+      sessionStatus.textContent = "Signed in as username";
+      document.body.dataset.authenticated = "true";
+    }
+
+    function showLogin() {
+      loginSection.classList.remove("hidden");
+      dashboardSection.classList.remove("is-visible");
+      sessionStatus.textContent = "Signed out";
+      document.body.dataset.authenticated = "false";
+    }
+
+    loginForm.addEventListener("submit", function (event) {
+      event.preventDefault();
+
+      const enteredUsername = document.getElementById("username").value.trim();
+      const enteredPassword = document.getElementById("password").value;
+
+      if (enteredUsername === VALID_USERNAME && enteredPassword === VALID_PASSWORD) {
+        loginError.classList.remove("visible");
+        showDashboard();
+        return;
+      }
+
+      loginError.classList.add("visible");
+    });
+
+    signOutButton.addEventListener("click", function () {
+      loginForm.reset();
+      loginError.classList.remove("visible");
+      showLogin();
+      document.getElementById("username").focus();
+    });
+
+    showLogin();
+  </script>
+</body>
+</html>

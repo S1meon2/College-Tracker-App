@@ -673,6 +673,7 @@ MDFloatLayout:
                     on_press: root.delete_class()
                     font_name: "RobotoMedium"
                     md_bg_color: 0.8, 0.1, 0.1, 1  # Red
+                    on_release: root.manager.current = "main"
 
                 MDFillRoundFlatButton:
                     text: "Complete Edit"
@@ -727,12 +728,12 @@ MDFloatLayout:
 
                 MDRaisedButton:
                     text: "Get assignments from ALL classes"
-                    on_press: root.get_all_assignments()
                     size_hint_y: None
                     height: "48dp"
                     size_hint_x: 1.0
                     font_name: "RobotoMedium"
                     md_bg_color: 0.4, 0.3, 0.5, 1  # Dark purple
+                    on_press: root.extract_all()
 
                 MDSeparator:
                     height: "1dp"

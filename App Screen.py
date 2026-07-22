@@ -18,10 +18,7 @@ from G_Tools import (
 )
 from ububbleDB import (
     send_login, get_login, send_class, recieve_scraped,
-    send_account, get_classes, delete_class, edit_class, delete_login
-)
-from Assignment_WEB import (
-    scrape_cengage, scrape_zybooks, scrape_blackboard, scrape_demo
+    send_account, get_classes, delete_class, edit_class, delete_login, all_scraped
 )
 #########################################################################################################
 # App Screens and their python logic, most functions are connected to buttons in the KV file
@@ -29,7 +26,7 @@ class MainScreen(Screen):
 
     def account_in(self):
         """Once the user signs in, the sign-in button changes color and says welcome to the user"""
-        self.ids.sign_in_button.text = f"Welcome {MDApp.get_running_app().isSignedIn}!"
+        self.ids.sign_in_button.text = f"Welcome {MDApp.get_running_app().isSignedIn} !"
         self.ids.sign_in_button.md_bg_color = [0.67, 0.6, 0.66, 1]
         self.ids.sign_in_button.text_color = [1, 1, 1, 1]
 
@@ -89,8 +86,12 @@ class ClassAddScreen(Screen):
         classname = self.ids.class_name.text
         webname = self.ids.assignment_website.text
         assignmentpage = self.ids.assignment_page_input.text
-        send_class(classname, webname, "", assignmentpage, MDApp.get_running_app().isSignedIn)
-        MDApp.get_running_app().show_notif(classname + " has been added and can now be scraped!", "success")
+        if classname == webname == assignmentpage == "":
+            pass
+            MDApp.get_running_app().show_notif("Text fields can not be empty", "error")
+        else:
+            send_class(classname, webname, "", assignmentpage, MDApp.get_running_app().isSignedIn)
+            MDApp.get_running_app().show_notif(classname + " has been added and can now be scraped!", "success")
 
 class SignInScreen(Screen):
     
@@ -235,13 +236,16 @@ class ClassesScreen(Screen):
         """Extract the info from the selected class and send it to google tasks or allow user to copy the raw text themselves"""
         MDApp.get_running_app().show_notif("Getting assignments...", "process")
         global raw_text
-        raw_text = recieve_scraped(self.ids.class_website.text, MDApp.get_running_app().isSignedIn)
+        raw_text = recieve_scraped(self.ids.class_title.text, self.ids.class_website.text, MDApp.get_running_app().isSignedIn)
         if raw_text:
             sync_assignments_to_tasks(raw_text)
             self.text_to_copy(raw_text)
             MDApp.get_running_app().show_notif("assignments sent and available to copy","success")
         else:
             MDApp.get_running_app().show_notif("No assignments found to sync. Maybe sign in or connect a site.", "error")
+
+    def extract_all(self):
+        all_scraped(MDApp.get_running_app().isSignedIn)
 
 class TopNotification(MDCard):
     # initialize the notification text and it's color (purple by default)
