@@ -12,21 +12,31 @@ from google.auth.transport.requests import Request
 ########################################################################################################################
 
 # Configure your Gemini API Key here
+if not os.path.exists("api_key.txt"):
+    with open("api_key.txt", "w") as f:
+        f.write("")
+
 with open("api_key.txt", "r") as f:
     GENAI_API_KEY = f.read().strip()
     f.close()
 
-genai.configure(api_key=GENAI_API_KEY)
-
-# Model Configuration
-model = genai.GenerativeModel(
-       model_name="gemini-2.5-flash",
-       generation_config={"response_mime_type": "application/json"}
-   )
+model = None
+if GENAI_API_KEY:
+    genai.configure(api_key=GENAI_API_KEY)
+    # Model Configuration
+    model = genai.GenerativeModel(
+           model_name="gemini-2.5-flash",
+           generation_config={"response_mime_type": "application/json"}
+       )
+else:
+    print("WARNING: Gemini API key not found in api_key.txt. AI features will not work.")
 
 ########################################################################################################################
 
 def extract_assignments(raw_text):
+   if not model:
+       print("Error: Gemini API key not configured. Cannot extract assignments.")
+       return []
 
    prompt = f"""
        I am going to give you raw text scraped from a university website.
@@ -87,6 +97,9 @@ def sync_assignments_to_tasks(raw_scraped_text):
    print("AI is processing assignments...")
    try:
        assignments = extract_assignments(raw_scraped_text)
+       if not assignments:
+           return
+
        tasksconnect = google_auth()
 
 
@@ -181,5 +194,3 @@ def check_task_lists():
    else:
        for item in items:
            print(f"List Name: {item['title']} | List ID: {item['id']}")
-
-

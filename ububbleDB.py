@@ -113,6 +113,7 @@ def send_login(name, userName, userPass, isSigned):
 def get_login(name,isSignedIn):
     """Get login info from DB"""
     if isSignedIn != "user":
+        create_login_table()
         connection = sqlite3.connect('ububble.db')
         control = connection.cursor()
         control.execute("SELECT * FROM login WHERE isSigned=? AND name=?", (isSignedIn, name))
@@ -354,6 +355,7 @@ def retrieve_account(_username,_pin):
 connection = sqlite3.connect('ububble.db')
 control = connection.cursor()
 #control.execute("DROP TABLE class")
-#control.execute(" DELETE FROM login WHERE name = 'blackboard' ")
+#control.execute(" DELETE FROM login WHERE name = 'demo' ")
 connection.commit()
 connection.close()
+

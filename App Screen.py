@@ -245,7 +245,16 @@ class ClassesScreen(Screen):
             MDApp.get_running_app().show_notif("No assignments found to sync. Maybe sign in or connect a site.", "error")
 
     def extract_all(self):
-        all_scraped(MDApp.get_running_app().isSignedIn)
+        self.update_panel("All Classes", "--All--")
+        MDApp.get_running_app().show_notif("Getting assignments...", "process")
+        global raw_text
+        raw_text = all_scraped(MDApp.get_running_app().isSignedIn)
+        if raw_text:
+            sync_assignments_to_tasks(raw_text)
+            self.text_to_copy(raw_text)
+            MDApp.get_running_app().show_notif("assignments sent and available to copy","success")
+        else:
+            MDApp.get_running_app().show_notif("No assignments found to sync. Maybe sign in or connect a site.", "error")
 
 class TopNotification(MDCard):
     # initialize the notification text and it's color (purple by default)
