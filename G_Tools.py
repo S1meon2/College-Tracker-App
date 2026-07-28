@@ -64,6 +64,13 @@ def extract_assignments(raw_text):
 
 ########################################################################################################################
 
+try:
+    from secret_config import CLIENT_CONFIG
+except ImportError:
+    CLIENT_CONFIG = {}
+
+########################################################################################################################
+
 def google_auth():
     """Connect to user Google account, connect to the U-Bubble app on Google Cloud, and connect to Google Tasks"""
     creds = None
@@ -78,8 +85,10 @@ def google_auth():
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
         else:
-            # For a completely new user, the program first checks that my app is registered |in google cloud| then throws a Google sign-in prompt for them.
-            flow = InstalledAppFlow.from_client_secrets_file('credentials.json', Tasks)
+            # Use in-memory CLIENT_CONFIG loaded from secret_config.py
+            if not CLIENT_CONFIG:
+                raise ValueError("CLIENT_CONFIG is missing. Make sure secret_config.py exists.")
+            flow = InstalledAppFlow.from_client_config(CLIENT_CONFIG, Tasks)
             creds = flow.run_local_server(port=0)
 
         # Save the credentials for the next run

@@ -208,6 +208,7 @@ __marimo__/
 
 credentials.json
 token.json
+secret_config.py
 
 api_key.txt
 UBCS
