@@ -1,10 +1,4 @@
-<p align="center">
-  Here is a demo of the U-Bubble app:
-</p>
-
-<p align="center">
-  <video width="100%" controls autoplay loop muted src="assets/U-Bubble%20demo%20one.mp4"></video>
-</p>
+[![U-Bubble Demo Video](https://img.youtube.com/vi/Xj08vbPjx4o/0.jpg)](https://www.youtube.com/watch?v=Xj08vbPjx4o)
 
 # College-Tracker-App (beta) ~ Webscrape all your assignments!      
 # { Blackboard, Zybooks, Webassign/Cengage}
