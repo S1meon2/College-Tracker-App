@@ -82,10 +82,21 @@ def google_auth():
 
     # Expired access can get refreshed here
     if not creds or not creds.valid:
+        should_reauth = False
         if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
+            try:
+                creds.refresh(Request())
+            except Exception as e:
+                print(f"Token refresh failed: {e}. Deleting token and re-authenticating.")
+                should_reauth = True
         else:
-            # Use in-memory CLIENT_CONFIG loaded from secret_config.py
+            should_reauth = True
+
+        #the user will have to re-login to google if the token expired
+        if should_reauth:
+            if os.path.exists('token.json'):
+                os.remove('token.json')
+
             if not CLIENT_CONFIG:
                 raise ValueError("CLIENT_CONFIG is missing. Make sure secret_config.py exists.")
             flow = InstalledAppFlow.from_client_config(CLIENT_CONFIG, Tasks)
