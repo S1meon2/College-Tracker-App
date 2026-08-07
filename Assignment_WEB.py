@@ -119,14 +119,32 @@ def scrape_blackboard(userName, userPass, assignmentPage):
         time.sleep(5)
 
         page_to_scrape.find_element(By.CLASS_NAME, "button-1").click()
-        #   Input Username
-        username = page_to_scrape.find_element(By.ID, "user_id")
+        print("Clicked OK")
+
+        '''Click Login with bamaid'''
+        page_to_scrape.find_element(By.XPATH, "//div[@id='login-block']//button[contains(text(), 'Login with myBama ID')]").click()
+        print("Clicked Login with myBama ID")
+
+        #   Input Username (may need to fix)
+        username = page_to_scrape.find_element(By.ID, "identifier")
         username.send_keys(userName)
-        #   Input Password
-        password = page_to_scrape.find_element(By.ID, "password")
+        print("Entered Username")
+
+        '''Click Next'''
+        page_to_scrape.find_element(By.XPATH, "//button[@data-se='save' and text()='Next']").click()
+        print("Clicked Next")
+
+        time.sleep(5)
+
+        #   Input Password (may need to fix)
+        password = page_to_scrape.find_element(By.ID, "credentials.passcode")
         password.send_keys(userPass)
-        #   Sign in button
-        page_to_scrape.find_element(By.ID, "entry-login").click()
+        print("Entered Password")
+
+        #   Verify button (may need to fix)
+        page_to_scrape.find_element(By.XPATH, "//button[@data-se='save' and text()='Verify']").click()
+        print("Clicked Verify")
+
         # wait to load
         time.sleep(8)
         #   The Page we want

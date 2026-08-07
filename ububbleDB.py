@@ -172,6 +172,7 @@ def recieve_scraped(classname, name, isSigned):
             all_data += scrape_zybooks(login[1], login[2], get_page(classname, "zybooks", isSigned))
 
         if name == "blackboard" == login[0] == "blackboard" and login[3] == isSigned:
+            print("DEBUG: " + get_page(classname, "blackboard", isSigned))
             all_data += scrape_blackboard(login[1], login[2], get_page(classname, "blackboard", isSigned))
 
         if name == login[0] == "demo" and login[3] == isSigned:
