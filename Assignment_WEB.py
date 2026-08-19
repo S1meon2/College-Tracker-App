@@ -107,50 +107,63 @@ def scrape_zybooks(userName, userPass, assignmentPage):
         # -------------^
 
 ######################################################################################################################################################
-def scrape_blackboard(userName, userPass, assignmentPage):
+def scrape_blackboard_all(userName, userPass, assignmentPage):
     import time
-    if assignmentPage:
+    try:
+
         #   Open Chrome
         page_to_scrape = webdriver.Chrome()
+        print("DEBUG: Chrome Opened")
 
-        #   Open Website
+        #   Open UA Blackboard Website
         page_to_scrape.get("https://ualearn.blackboard.com/")
+        print("DEBUG: UA Blackboard Opened")
 
+        #    Page Load
         time.sleep(5)
 
+        #   Click 'OK' to close pop-up
         page_to_scrape.find_element(By.CLASS_NAME, "button-1").click()
-        print("Clicked OK")
+        print("DEBUG: pop-up closed")
 
-        '''Click Login with bamaid'''
+        #    Click 'Login with myBama ID'
         page_to_scrape.find_element(By.XPATH, "//div[@id='login-block']//button[contains(text(), 'Login with myBama ID')]").click()
-        print("Clicked Login with myBama ID")
+        print("DEBUG: Login with myBama ID clicked")
 
-        #   Input Username (may need to fix)
+        #   Input Username
         username = page_to_scrape.find_element(By.ID, "identifier")
         username.send_keys(userName)
-        print("Entered Username")
+        print("DEBUG: Entered Username")
 
-        '''Click Next'''
+        #   Click Next
         page_to_scrape.find_element(By.XPATH, "//button[@data-se='save' and text()='Next']").click()
-        print("Clicked Next")
+        print("DEBUG: Clicked Next")
 
+        #    Page Load
         time.sleep(5)
 
-        #   Input Password (may need to fix)
+        #   Input Password
         password = page_to_scrape.find_element(By.ID, "credentials.passcode")
         password.send_keys(userPass)
-        print("Entered Password")
+        print("DEBUG: Entered Password")
 
-        #   Verify button (may need to fix)
+        #   Click 'Verify' button
         page_to_scrape.find_element(By.XPATH, "//button[@data-se='save' and text()='Verify']").click()
-        print("Clicked Verify")
+        print("DEBUG: Clicked Verify")
 
-        # wait to load
+        #    Page Load
         time.sleep(8)
-        #   The Page we want
-        page_to_scrape.get("https://ualearn.blackboard.com/ultra/calendar")
+
+        #   Get the Blackboard Calendar Page
+        page_to_scrape.get(assignmentPage)
+        print("DEBUG: Blackboard Calendar Opened")
+
+        #   Open 'Due Dates' Tab
         page_to_scrape.find_element(By.ID, "bb-calendar1-deadline").click()
-        # wait to load
+        print("DEBUG: Due Dates Tab Opened")
+
+
+        #    Page Load
         time.sleep(2)
 
         # --------------------------------------------------------------------------------------
@@ -177,6 +190,8 @@ def scrape_blackboard(userName, userPass, assignmentPage):
         # If you want to check all the html use this:
         # --print(page_to_scrape.page_source)--
         # -------------^
+    except:
+        print("Error: No page given")
 
 #####################################################################################################################################
 def scrape_cengage(userName, userPass, assignmentPage):
@@ -236,3 +251,84 @@ def scrape_cengage(userName, userPass, assignmentPage):
         #-------------^
 
 #########################################################################################################################################333
+def scrape_blackboard_one(userName, userPass, assignmentPage):
+    import time
+    try:
+
+        #   Open Chrome
+        page_to_scrape = webdriver.Chrome()
+        print("DEBUG: Chrome Opened")
+
+        #   Open UA Blackboard Website
+        page_to_scrape.get("https://ualearn.blackboard.com/")
+        print("DEBUG: UA Blackboard Opened")
+
+        #    Page Load
+        time.sleep(5)
+
+        #   Click 'OK' to close pop-up
+        page_to_scrape.find_element(By.CLASS_NAME, "button-1").click()
+        print("DEBUG: pop-up closed")
+
+        #    Click 'Login with myBama ID'
+        page_to_scrape.find_element(By.XPATH, "//div[@id='login-block']//button[contains(text(), 'Login with myBama ID')]").click()
+        print("DEBUG: Login with myBama ID clicked")
+
+        #   Input Username
+        username = page_to_scrape.find_element(By.ID, "identifier")
+        username.send_keys(userName)
+        print("DEBUG: Entered Username")
+
+        #   Click Next
+        page_to_scrape.find_element(By.XPATH, "//button[@data-se='save' and text()='Next']").click()
+        print("DEBUG: Clicked Next")
+
+        #    Page Load
+        time.sleep(5)
+
+        #   Input Password
+        password = page_to_scrape.find_element(By.ID, "credentials.passcode")
+        password.send_keys(userPass)
+        print("DEBUG: Entered Password")
+
+        #   Click 'Verify' button
+        page_to_scrape.find_element(By.XPATH, "//button[@data-se='save' and text()='Verify']").click()
+        print("DEBUG: Clicked Verify")
+
+        #    Page Load
+        time.sleep(8)
+
+        #   Get the Blackboard Grades Page
+        page_to_scrape.get(assignmentPage)
+
+        #    Page Load
+        time.sleep(2)
+
+        # --------------------------------------------------------------------------------------
+
+        #   Pull the name of each assignment and thier corresponding times/dates
+        names = page_to_scrape.find_elements(By.CSS_SELECTOR,
+                                             "a[id*=course-student-grades] > div.MuiTypography-root")
+        times = page_to_scrape.find_elements(By.CSS_SELECTOR,
+                                             "td[aria-describedby*='dueDate'] .MuiTypography-root")
+
+        all = ""
+        #   Each is printed
+        print()
+        for name, time in zip(names, times):
+            print(name.text + " - " + time.text)
+            all += " " + name.text + " - " + time.text
+        print()
+
+        #   End the webscraping
+        page_to_scrape.quit()
+        return all
+        # ----------------------------------------------------------------------------------------
+
+        # If you want to check all the html use this:
+        # --print(page_to_scrape.page_source)--
+        # -------------^
+    except:
+        print("Error: No page given")
+
+#####################################################################################################################################

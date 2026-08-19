@@ -5,7 +5,7 @@ from kivymd.app import MDApp
 ###################################################################################################################################
 # Internal Imports
 from Assignment_WEB import (
-    scrape_cengage, scrape_zybooks, scrape_blackboard, scrape_demo
+    scrape_cengage, scrape_zybooks, scrape_blackboard_all, scrape_blackboard_one, scrape_demo
 )
 ######################################################################################################################################
 
@@ -172,8 +172,10 @@ def recieve_scraped(classname, name, isSigned):
             all_data += scrape_zybooks(login[1], login[2], get_page(classname, "zybooks", isSigned))
 
         if name == "blackboard" == login[0] == "blackboard" and login[3] == isSigned:
-            print("DEBUG: " + get_page(classname, "blackboard", isSigned))
-            all_data += scrape_blackboard(login[1], login[2], get_page(classname, "blackboard", isSigned))
+            all_data += scrape_blackboard_all(login[1], login[2], get_page(classname, "blackboard", isSigned))
+
+        if name == "blackboard1" and login[0] == "blackboard" and login[3] == isSigned:
+            all_data += scrape_blackboard_one(login[1], login[2], get_page(classname, "blackboard1", isSigned))
 
         if name == login[0] == "demo" and login[3] == isSigned:
             all_data += scrape_demo(login[1], login[2], get_page(classname, "demo", isSigned))
