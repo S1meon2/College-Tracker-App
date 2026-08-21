@@ -71,19 +71,19 @@ except ImportError:
 
 ########################################################################################################################
 
-def google_auth():
+def google_auth(force_refresh=False):
     """Connect to user Google account, connect to the U-Bubble app on Google Cloud, and connect to Google Tasks"""
     creds = None
     Tasks = ['https://www.googleapis.com/auth/tasks']
 
     # Have you signed in before? The token is what allows the software to get and edit data from the scope |google tasks|
-    if os.path.exists('token.json'):
+    if os.path.exists('token.json') and not force_refresh:
         creds = Credentials.from_authorized_user_file('token.json', Tasks)
 
     # Expired access can get refreshed here
-    if not creds or not creds.valid:
+    if force_refresh or not creds or not creds.valid:
         should_reauth = False
-        if creds and creds.expired and creds.refresh_token:
+        if not force_refresh and creds and creds.expired and creds.refresh_token:
             try:
                 creds.refresh(Request())
             except Exception as e:
@@ -92,7 +92,7 @@ def google_auth():
         else:
             should_reauth = True
 
-        #the user will have to re-login to google if the token expired
+        #the user will have to re-login to google if forcing refresh or token expired
         if should_reauth:
             if os.path.exists('token.json'):
                 os.remove('token.json')
@@ -172,7 +172,7 @@ def sync_assignments_to_tasks(raw_scraped_text):
 
 
                # Inserting into your specific "HW and Assignments" list
-               result = tasksconnect.tasks().insert(tasklist= 'YTAwSUV3aEgzU0N5QUNOXw', body=task_body).execute()
+               result = tasksconnect.tasks().insert(tasklist= '@default', body=task_body).execute()
                print(f"Successfully added: {result.get('title')} | Task ID: {result.get('id')}")
 
 

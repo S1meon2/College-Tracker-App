@@ -41,8 +41,8 @@ class SettingsScreen(Screen):
     def connect_google(self):
         """Authenticate the connection to google services so that we can modify tasks"""
         MDApp.get_running_app().show_notif("Opening browser for Google Authentication...","process")
-        if google_auth():
-            MDApp.get_running_app().show_notif("Automatically Signed back in to google!", "success")
+        if google_auth(force_refresh=True):
+            MDApp.get_running_app().show_notif("Successfully connected to Google!", "success")
 
 
     def get_gemini_key(self):
