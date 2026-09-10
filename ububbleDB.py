@@ -171,7 +171,7 @@ def recieve_scraped(classname, name, isSigned):
         if name == "zybooks" and login[0] == "zybooks" and login[3] == isSigned:
             all_data += scrape_zybooks(login[1], login[2], get_page(classname, "zybooks", isSigned))
 
-        if name == "blackboard" == login[0] == "blackboard" and login[3] == isSigned:
+        if name == "blackboard" and login[0] == "blackboard" and login[3] == isSigned:
             all_data += scrape_blackboard_all(login[1], login[2], get_page(classname, "blackboard", isSigned))
 
         if name == "blackboard1" and login[0] == "blackboard" and login[3] == isSigned:

@@ -1,7 +1,10 @@
 """Welcome to U-Bubble's Web Scraper!"""
 # Selenium Imports
 from selenium import webdriver
+from selenium.webdriver.support import expected_conditions as EC, wait
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+
 ####################################################################################################################################
 
 def scrape_demo(userName, userPass, assignmentPage):
@@ -109,89 +112,109 @@ def scrape_zybooks(userName, userPass, assignmentPage):
 ######################################################################################################################################################
 def scrape_blackboard_all(userName, userPass, assignmentPage):
     import time
-    try:
 
-        #   Open Chrome
-        page_to_scrape = webdriver.Chrome()
-        print("DEBUG: Chrome Opened")
+    #   Open Chrome
+    page_to_scrape = webdriver.Chrome()
+    print("DEBUG: Chrome Opened")
 
-        #   Open UA Blackboard Website
-        page_to_scrape.get("https://ualearn.blackboard.com/")
-        print("DEBUG: UA Blackboard Opened")
+    #   Open UA Blackboard Website
+    page_to_scrape.get("https://ualearn.blackboard.com/")
+    print("DEBUG: UA Blackboard Opened")
 
-        #    Page Load
-        time.sleep(5)
+    #    Page Load
+    time.sleep(5)
 
-        #   Click 'OK' to close pop-up
-        page_to_scrape.find_element(By.CLASS_NAME, "button-1").click()
-        print("DEBUG: pop-up closed")
+    #   Click 'OK' to close pop-up
+    page_to_scrape.find_element(By.CLASS_NAME, "button-1").click()
+    print("DEBUG: pop-up closed")
 
-        #    Click 'Login with myBama ID'
-        page_to_scrape.find_element(By.XPATH, "//div[@id='login-block']//button[contains(text(), 'Login with myBama ID')]").click()
-        print("DEBUG: Login with myBama ID clicked")
+    #    Click 'Login with myBama ID'
+    page_to_scrape.find_element(By.XPATH, "//div[@id='login-block']//button[contains(text(), 'Login with myBama ID')]").click()
+    print("DEBUG: Login with myBama ID clicked")
 
-        #   Input Username
-        username = page_to_scrape.find_element(By.ID, "identifier")
-        username.send_keys(userName)
-        print("DEBUG: Entered Username")
+    #   Input Username
+    username = page_to_scrape.find_element(By.ID, "identifier")
+    username.send_keys(userName)
+    print("DEBUG: Entered Username")
 
-        #   Click Next
-        page_to_scrape.find_element(By.XPATH, "//button[@data-se='save' and text()='Next']").click()
-        print("DEBUG: Clicked Next")
+    #   Click Next
+    page_to_scrape.find_element(By.XPATH, "//button[@data-se='save' and text()='Next']").click()
+    print("DEBUG: Clicked Next")
 
-        #    Page Load
-        time.sleep(5)
+    #    Page Load
+    time.sleep(5)
 
-        #   Input Password
-        password = page_to_scrape.find_element(By.ID, "credentials.passcode")
-        password.send_keys(userPass)
-        print("DEBUG: Entered Password")
+    #   Input Password
+    password = page_to_scrape.find_element(By.ID, "credentials.passcode")
+    password.send_keys(userPass)
+    print("DEBUG: Entered Password")
 
-        #   Click 'Verify' button
-        page_to_scrape.find_element(By.XPATH, "//button[@data-se='save' and text()='Verify']").click()
-        print("DEBUG: Clicked Verify")
+    #   Click 'Verify' button
+    page_to_scrape.find_element(By.XPATH, "//button[@data-se='save' and text()='Verify']").click()
+    print("DEBUG: Clicked Verify")
 
-        #    Page Load
-        time.sleep(8)
+    #    Page Load
+    time.sleep(8)
 
-        #   Get the Blackboard Calendar Page
-        page_to_scrape.get(assignmentPage)
-        print("DEBUG: Blackboard Calendar Opened")
+    #   Get the Blackboard Calendar Page
+    page_to_scrape.get(assignmentPage)
+    print("DEBUG: Blackboard Calendar Opened")
 
-        #   Open 'Due Dates' Tab
-        page_to_scrape.find_element(By.ID, "bb-calendar1-deadline").click()
-        print("DEBUG: Due Dates Tab Opened")
+    #   Open 'Due Dates' Tab
+    page_to_scrape.find_element(By.ID, "bb-calendar1-deadline").click()
+    print("DEBUG: Due Dates Tab Opened")
 
 
-        #    Page Load
-        time.sleep(2)
+    #    Page Load
+    time.sleep(2)
 
-        # --------------------------------------------------------------------------------------
+    # --------------------------------------------------------------------------------------
 
-        #   Pull the name of each assignment and thier corresponding times/dates
-        names = page_to_scrape.find_elements(By.CSS_SELECTOR,
-                                             "a[ng-click='viewDueDateItem(dueDateItem)']")
-        times = page_to_scrape.find_elements(By.CSS_SELECTOR,
-                                             "div[class='content']")
+    """ Scroll to bottom """
 
-        all = ""
-        #   Each is printed
-        print()
-        for name, time in zip(names, times):
-            print(name.text + " - " + time.text)
-            all += " " + name.text + " - " + time.text
-        print()
+    scroll_container = page_to_scrape.find_element(By.CSS_SELECTOR, ".scroll-container")
 
-        #   End the webscraping
-        page_to_scrape.quit()
-        return all
-        # ----------------------------------------------------------------------------------------
+    last_height = page_to_scrape.execute_script("return arguments[0].scrollHeight", scroll_container)
+    print(page_to_scrape.execute_script("return arguments[0].scrollHeight", scroll_container))
+    while True:
 
-        # If you want to check all the html use this:
-        # --print(page_to_scrape.page_source)--
-        # -------------^
-    except:
-        print("Error: No page given")
+        # 3. Scroll down to the bottom
+        page_to_scrape.execute_script("arguments[0].scrollTo(0, arguments[0].scrollHeight);", scroll_container)
+
+        # 4. Wait for new items to load
+        time.sleep(2)  # Adjust based on site speed
+
+        # 5. Check if the page height has changed
+        new_height = page_to_scrape.execute_script("return arguments[0].scrollHeight", scroll_container)
+        print(page_to_scrape.execute_script("return arguments[0].scrollHeight", scroll_container))
+        if new_height == last_height:
+            # If height didn't change, try scrolling a bit more or break
+            break
+
+    """ Scrape assignments and dates"""
+    #   Pull the name of each assignment and thier corresponding times/dates
+    names = page_to_scrape.find_elements(By.CSS_SELECTOR,
+                                         "a[ng-click='viewDueDateItem(dueDateItem)']")
+    times = page_to_scrape.find_elements(By.CSS_SELECTOR,
+                                         "div[class='content']")
+
+    all = ""
+    #   Each is printed
+    print()
+    for name, time in zip(names, times):
+        print(name.text + " - " + time.text)
+        all += " " + name.text + " - " + time.text
+    print()
+
+    #   End the webscraping
+    page_to_scrape.quit()
+    return all
+    # ----------------------------------------------------------------------------------------
+
+    # If you want to check all the html use this:
+    # --print(page_to_scrape.page_source)--
+    # -------------^
+
 
 #####################################################################################################################################
 def scrape_cengage(userName, userPass, assignmentPage):
@@ -253,66 +276,69 @@ def scrape_cengage(userName, userPass, assignmentPage):
 #########################################################################################################################################333
 def scrape_blackboard_one(userName, userPass, assignmentPage):
     import time
-    try:
 
-        #   Open Chrome
-        page_to_scrape = webdriver.Chrome()
-        print("DEBUG: Chrome Opened")
 
-        #   Open UA Blackboard Website
-        page_to_scrape.get("https://ualearn.blackboard.com/")
-        print("DEBUG: UA Blackboard Opened")
+    #   Open Chrome
+    page_to_scrape = webdriver.Chrome()
+    print("DEBUG: Chrome Opened")
 
-        #    Page Load
-        time.sleep(5)
+    #   Open UA Blackboard Website
+    page_to_scrape.get("https://ualearn.blackboard.com/")
+    print("DEBUG: UA Blackboard Opened")
 
-        #   Click 'OK' to close pop-up
-        page_to_scrape.find_element(By.CLASS_NAME, "button-1").click()
-        print("DEBUG: pop-up closed")
+    #    Page Load
+    time.sleep(5)
 
-        #    Click 'Login with myBama ID'
-        page_to_scrape.find_element(By.XPATH, "//div[@id='login-block']//button[contains(text(), 'Login with myBama ID')]").click()
-        print("DEBUG: Login with myBama ID clicked")
+    #   Click 'OK' to close pop-up
+    page_to_scrape.find_element(By.CLASS_NAME, "button-1").click()
+    print("DEBUG: pop-up closed")
 
-        #   Input Username
-        username = page_to_scrape.find_element(By.ID, "identifier")
-        username.send_keys(userName)
-        print("DEBUG: Entered Username")
+    #    Click 'Login with myBama ID'
+    page_to_scrape.find_element(By.XPATH, "//div[@id='login-block']//button[contains(text(), 'Login with myBama ID')]").click()
+    print("DEBUG: Login with myBama ID clicked")
 
-        #   Click Next
-        page_to_scrape.find_element(By.XPATH, "//button[@data-se='save' and text()='Next']").click()
-        print("DEBUG: Clicked Next")
+    #   Input Username
+    username = page_to_scrape.find_element(By.ID, "identifier")
+    username.send_keys(userName)
+    print("DEBUG: Entered Username")
 
-        #    Page Load
-        time.sleep(5)
+    #   Click Next
+    page_to_scrape.find_element(By.XPATH, "//button[@data-se='save' and text()='Next']").click()
+    print("DEBUG: Clicked Next")
 
-        #   Input Password
-        password = page_to_scrape.find_element(By.ID, "credentials.passcode")
-        password.send_keys(userPass)
-        print("DEBUG: Entered Password")
+    #    Page Load
+    time.sleep(5)
 
-        #   Click 'Verify' button
-        page_to_scrape.find_element(By.XPATH, "//button[@data-se='save' and text()='Verify']").click()
-        print("DEBUG: Clicked Verify")
+    #   Input Password
+    password = page_to_scrape.find_element(By.ID, "credentials.passcode")
+    password.send_keys(userPass)
+    print("DEBUG: Entered Password")
 
-        #    Page Load
-        time.sleep(8)
+    #   Click 'Verify' button
+    page_to_scrape.find_element(By.XPATH, "//button[@data-se='save' and text()='Verify']").click()
+    print("DEBUG: Clicked Verify")
 
-        #   Get the Blackboard Grades Page
-        page_to_scrape.get(assignmentPage)
+    #    Page Load
+    time.sleep(8)
 
-        #    Page Load
-        time.sleep(2)
+    #   Get the Blackboard Grades Page
+    page_to_scrape.get(assignmentPage)
 
-        # --------------------------------------------------------------------------------------
+    #    Page Load
+    time.sleep(2)
 
-        #   Pull the name of each assignment and thier corresponding times/dates
-        names = page_to_scrape.find_elements(By.CSS_SELECTOR,
-                                             "a[id*=course-student-grades] > div.MuiTypography-root")
-        times = page_to_scrape.find_elements(By.CSS_SELECTOR,
-                                             "td[aria-describedby*='dueDate'] .MuiTypography-root")
+    # --------------------------------------------------------------------------------------
 
-        all = ""
+    all = ""
+    while True:
+        import time
+        time.sleep(3)
+
+        # Extract text strings immediately while elements are fresh
+        names = page_to_scrape.find_elements(By.CSS_SELECTOR, "a[id*=course-student-grades] > div.MuiTypography-root")
+        times = page_to_scrape.find_elements(By.CSS_SELECTOR, "td[aria-describedby *= 'dueDate'] .MuiTypography-root")
+
+
         #   Each is printed
         print()
         for name, time in zip(names, times):
@@ -320,15 +346,24 @@ def scrape_blackboard_one(userName, userPass, assignmentPage):
             all += " " + name.text + " - " + time.text
         print()
 
-        #   End the webscraping
-        page_to_scrape.quit()
-        return all
-        # ----------------------------------------------------------------------------------------
+        button = page_to_scrape.find_element(By.XPATH, "//button[contains(@class, 'js-pagination-page-up-button')]")
+        if button.get_attribute("disabled"):
+            break
 
-        # If you want to check all the html use this:
-        # --print(page_to_scrape.page_source)--
-        # -------------^
-    except:
-        print("Error: No page given")
+        button.click()
+
+
+
+
+
+    #   End the webscraping
+    page_to_scrape.quit()
+    return all
+    # ----------------------------------------------------------------------------------------
+
+    # If you want to check all the html use this:
+    # --print(page_to_scrape.page_source)--
+    # -------------^
+
 
 #####################################################################################################################################
